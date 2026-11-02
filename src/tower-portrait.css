@@ -213,6 +213,11 @@ button {
   height: 100svh;
   min-height: 0;
 }
+.embedded-study .portrait-header,
+.embedded-study .portrait-title,
+.embedded-study .portrait-footer {
+  display: none;
+}
 [hidden] {
   display: none !important;
 }
