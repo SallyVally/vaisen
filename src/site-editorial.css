@@ -1,0 +1,237 @@
+.immersive-site .hero-bottom {
+  display: block;
+}
+.immersive-site .hero-bottom #scene-state {
+  position: absolute;
+}
+.immersive-site .hero-intro > .hero-actions {
+  margin-top: 22px;
+}
+.immersive-site .project-copy h3 {
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+@media (min-width: 741px) and (min-aspect-ratio: 116/100) {
+  .immersive-site .hero-copy,
+  .immersive-site .hero:not([data-sector=core]) .hero-copy,
+  .immersive-site .hero[data-sector=cgi] .hero-copy {
+    top: 22%;
+    left: 6%;
+    width: min(50%, 690px);
+  }
+  .immersive-site .hero-intro h1 {
+    font-size: 112px;
+    line-height: .95;
+    font-weight: 300;
+    margin-bottom: 30px;
+  }
+  .immersive-site .hero-intro h2 {
+    font-size: 54px;
+    line-height: 1.05;
+    font-weight: 400;
+    max-width: 610px;
+    min-height: 0;
+    margin-bottom: 24px;
+  }
+  .immersive-site .hero-description {
+    max-width: 330px;
+    min-height: 0;
+  }
+  .discipline-story {
+    max-height: calc(78svh - 150px);
+  }
+  .story-kicker,
+  .hero[data-sector=cgi] .story-kicker {
+    border: 0;
+    min-height: 38px;
+    max-width: 475px;
+  }
+  .story-place,
+  .hero[data-sector=cgi] .story-place {
+    margin: 14px 0 22px;
+  }
+  .immersive-site .discipline-story h2,
+  .immersive-site .hero[data-sector=cgi] .discipline-story h2 {
+    font-size: 68px;
+    line-height: 1.06;
+    font-weight: 400;
+    max-width: 680px;
+    min-height: 0;
+    margin: 0 0 24px;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+  .story-body,
+  .hero[data-sector=cgi] .story-body {
+    max-width: 355px;
+    min-height: 0;
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 0 0 15px;
+  }
+  .story-details {
+    min-height: 0;
+    margin-bottom: 18px;
+  }
+  .story-pagination {
+    max-width: 350px;
+  }
+  .story-footer {
+    max-width: 350px;
+  }
+  .immersive-site .sector-nav {
+    max-width: 700px;
+    gap: 30px;
+  }
+}
+@media (min-width: 741px) and (min-aspect-ratio: 116/100) and (max-height: 900px) {
+  .immersive-site .hero-copy,
+  .immersive-site .hero:not([data-sector=core]) .hero-copy,
+  .immersive-site .hero[data-sector=cgi] .hero-copy {
+    top: 18%;
+  }
+  .immersive-site .hero-intro h1 {
+    font-size: 92px;
+    margin-bottom: 22px;
+  }
+  .immersive-site .hero-intro h2 {
+    font-size: 44px;
+    margin-bottom: 18px;
+  }
+  .immersive-site .discipline-story h2,
+  .immersive-site .hero[data-sector=cgi] .discipline-story h2 {
+    font-size: 52px;
+    margin-bottom: 18px;
+  }
+  .story-place,
+  .hero[data-sector=cgi] .story-place {
+    margin: 8px 0 14px;
+  }
+}
+@media (min-width: 741px) and (min-aspect-ratio: 116/100) and (max-width: 1100px) {
+  .immersive-site .discipline-story h2,
+  .immersive-site .hero[data-sector=cgi] .discipline-story h2 {
+    font-size: 42px;
+  }
+  .immersive-site .hero-intro h2 {
+    font-size: 38px;
+  }
+}
+.cgi-breakdown {
+  display: block;
+  max-width: 350px;
+  margin: 4px 0 14px;
+}
+.cgi-breakdown summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 36px;
+  color: #c5c6c7;
+  font-size: 11px;
+  cursor: pointer;
+  list-style: none;
+  border-bottom: 1px solid #ffffff30;
+}
+.cgi-breakdown summary::-webkit-details-marker {
+  display: none;
+}
+.cgi-breakdown summary span {
+  color: #d9b477;
+  font-size: 17px;
+  transition: transform .3s ease;
+}
+.cgi-breakdown[open] summary span {
+  transform: rotate(45deg);
+}
+.cgi-stage-control {
+  border-top: 0;
+}
+.cgi-stage-caption {
+  color: #b1b2b3;
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+@media (max-width: 740px), (max-aspect-ratio: 115/100) {
+  .hero[data-sector=cgi] .story-content {
+    display: block;
+  }
+  .immersive-site .hero[data-sector=cgi] .discipline-story h2 {
+    min-height: 0;
+  }
+  .hero[data-sector=cgi] .story-body {
+    min-height: 0;
+  }
+  .cgi-breakdown {
+    max-width: 320px;
+  }
+}
+@media (max-width: 740px) {
+  .immersive-site .hero-intro h2 {
+    font-size: 25px;
+    line-height: 1.2;
+    min-height: 0;
+  }
+  .immersive-site .discipline-story h2,
+  .immersive-site .hero[data-sector=cgi] .discipline-story h2 {
+    font-size: 32px;
+    line-height: 1.12;
+    min-height: 0;
+    margin-bottom: 12px;
+  }
+  .story-body {
+    min-height: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cgi-breakdown summary span {
+    transition: none;
+  }
+}
+@media (min-width: 741px) and (min-aspect-ratio: 116/100) and (min-height: 651px) {
+  .immersive-site .hero[data-sector=core] .hero-copy {
+    top: 31%;
+    left: 7%;
+    width: 78%;
+    max-width: 1050px;
+  }
+  .immersive-site .hero[data-sector=core] .hero-intro > .eyebrow {
+    margin-bottom: 15px;
+    letter-spacing: .12em;
+  }
+  .immersive-site .hero[data-sector=core] .hero-intro h1 {
+    margin: 0 0 23px;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: .25em;
+  }
+  .immersive-site .hero[data-sector=core] .hero-intro h2 {
+    max-width: 920px;
+    margin: 0 0 23px;
+    font-size: clamp(58px, 7.1vw, 105px);
+    line-height: .99;
+    letter-spacing: -.055em;
+    font-weight: 500;
+    text-shadow: 0 2px 8px #000, 0 0 30px #000c;
+  }
+  .immersive-site .hero[data-sector=core] .hero-description {
+    max-width: 310px;
+    color: #d1d3d4;
+    line-height: 1.65;
+  }
+  .immersive-site .hero[data-sector=core] .hero-actions {
+    margin-top: 18px;
+  }
+}
+@media (min-width: 741px) and (min-aspect-ratio: 116/100) and (min-height: 651px) and (max-width: 1100px) {
+  .immersive-site .hero[data-sector=core] .hero-copy {
+    top: 29%;
+    width: 85%;
+  }
+  .immersive-site .hero[data-sector=core] .hero-intro h2 {
+    font-size: clamp(50px, 7vw, 76px);
+  }
+}

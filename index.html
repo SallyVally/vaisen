@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#080b0c" />
+    <meta name="description" content="VAISEN is an independent studio for websites, CGI, original music and light. Make them look twice." />
+    <title>VAISEN / Design, Image &amp; Sound</title>
+    <link rel="icon" href="%BASE_URL%brand/vaisen-logo.svg" type="image/svg+xml" />
+    <link rel="preload" href="%BASE_URL%brand/vaisen-logo.svg" as="image" type="image/svg+xml" />
+    <link rel="preload" href="%BASE_URL%fonts/manrope-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/src/site.css" />
+    <link rel="stylesheet" href="/src/site-immersive.css" />
+    <link rel="stylesheet" href="/src/site-story.css" />
+    <link rel="stylesheet" href="/src/site-editorial.css" />
+    <link rel="stylesheet" href="/src/site-intro.css" />
+    <link rel="stylesheet" href="/src/site-brand.css" />
+    <link rel="stylesheet" href="/src/site-perspective.css" />
+    <link rel="stylesheet" href="/src/site-vyshe.css" />
+    <link rel="stylesheet" href="/src/site-mobile.css" />
+  </head>
+  <body class="immersive-site">
+    <a class="skip-link" href="#work">Skip to selected work</a>
+    <header class="site-header" id="top">
+      <a class="brand" href="#top" aria-label="VAISEN home"><img class="brand-mark" src="%BASE_URL%brand/vaisen-logo.svg" width="44" height="44" alt="" /></a>
+      <nav class="main-nav" aria-label="Main navigation"><a href="#work">Selected work</a><a href="#disciplines">Disciplines</a><a href="#studio">The studio</a></nav>
+      <a class="header-contact" href="#contact">Let's talk <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="hero-title" data-sector="core">
+        <div class="hero-copy">
+          <div class="hero-intro">
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Independent design studio</p>
+          <h1 id="hero-title">VAISEN</h1><h2 id="hero-statement">Make them look twice.</h2>
+          <p id="hero-description" class="hero-description">Websites, CGI, original music and architectural lighting. An independent studio by Egor Vaiserman.</p>
+          <div class="hero-actions"><a class="text-action primary-action" id="hero-work-link" href="#work">Selected work <i data-lucide="arrow-down" aria-hidden="true"></i></a></div>
+          </div>
+          <section class="discipline-story" id="discipline-story" aria-label="Studio discipline" aria-roledescription="carousel" tabindex="0" hidden>
+            <div class="story-kicker"><span id="story-discipline"></span><button class="icon-button story-return" type="button" data-assembly="core" aria-label="Return to the full tower" title="Back to overview"><i data-lucide="corner-up-left" aria-hidden="true"></i></button></div>
+            <div class="story-content" id="story-content" role="tabpanel" aria-labelledby="story-tab-0">
+              <p class="story-place"><span id="story-place"></span></p>
+              <h2 id="story-title"></h2>
+              <p class="story-body" id="story-body"></p>
+            </div>
+            <div class="story-pagination"><div class="story-index" role="tablist" aria-label="Discipline chapters"><button id="story-tab-0" type="button" role="tab" data-chapter="0" aria-controls="story-content">01</button><button id="story-tab-1" type="button" role="tab" data-chapter="1" aria-controls="story-content">02</button><button id="story-tab-2" type="button" role="tab" data-chapter="2" aria-controls="story-content">03</button></div><div class="story-arrows"><button class="icon-button" id="story-prev" type="button" aria-label="Previous chapter" title="Previous chapter"><i data-lucide="arrow-left" aria-hidden="true"></i></button><button class="icon-button" id="story-next" type="button" aria-label="Next chapter" title="Next chapter"><i data-lucide="arrow-right" aria-hidden="true"></i></button></div></div>
+            <div class="story-footer"><a class="quiet-link" id="story-work-link" href="#work"><span id="story-work-label">View project</span><i data-lucide="arrow-down" aria-hidden="true"></i></a><div class="music-preview" id="music-preview" hidden><span>Music</span><span class="preview-progress" aria-hidden="true"><span id="preview-progress"></span></span><button class="icon-button" id="preview-sound" type="button" aria-label="Play music" title="Play music" aria-pressed="false"><i data-lucide="volume-2" aria-hidden="true"></i></button><output class="sr-only" id="preview-status" role="status"></output></div></div>
+          </section>
+        </div>
+        <div class="hero-exhibit" aria-label="VAISEN architectural world">
+          <div class="scene-stage"><img class="scene-poster" src="%BASE_URL%work/vaisen-a2-poster.webp" width="1600" height="900" alt="" fetchpriority="high" /><iframe id="studio-scene" title="VAISEN interactive architectural world" src="%BASE_URL%tower.html?embedded=1&amp;composition=immersive&amp;art=a2&amp;perf=0" loading="eager" tabindex="-1"></iframe><div class="scene-fallback" id="scene-fallback" hidden><p>The live scene couldn't load.</p><a href="%BASE_URL%tower.html">Try the standalone scene <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></div>
+          <div class="hero-bottom">
+          <output class="sr-only" id="scene-state" aria-live="polite">Preparing the scene</output>
+          <nav class="sector-nav" aria-label="Explore studio disciplines">
+            <button type="button" data-assembly="web" aria-pressed="false"><span>01</span> Websites <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <button type="button" data-assembly="cgi" aria-pressed="false"><span>02</span> CGI <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <button type="button" data-assembly="music" aria-pressed="false"><span>03</span> Music <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <button type="button" data-assembly="smart-light" aria-pressed="false"><span>04</span> Light <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+          </nav>
+          </div>
+        </div>
+      </section>
+      <section class="selected-work vyshe-work" id="work" aria-labelledby="work-title" data-mood="morning">
+        <article class="vyshe-project" id="vyshe" aria-labelledby="vyshe-title">
+          <div class="vyshe-sequence">
+            <div class="vyshe-stage">
+              <figure class="vyshe-picture" aria-label="VYSHE interior lighting study">
+                <div class="vyshe-image-plane">
+                  <img id="vyshe-image" src="%BASE_URL%work/vyshe-morning.jpg" width="1280" height="720" alt="VYSHE hotel room with a bed, timber floor and a mountain view" loading="lazy" decoding="async" />
+                  <img class="vyshe-light-zone" src="%BASE_URL%work/vyshe-evening.jpg" width="1280" height="720" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                  <img class="vyshe-evening" src="%BASE_URL%work/vyshe-evening.jpg" width="1280" height="720" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                </div>
+              </figure>
+              <div class="vyshe-topline section-shell"><p class="eyebrow">01 / Selected work</p><div class="mood-switch" role="group" aria-label="VYSHE image lighting" hidden><button type="button" data-mood="morning" aria-pressed="true">Day</button><button type="button" data-mood="evening" aria-pressed="false">Evening</button></div></div>
+              <div class="vyshe-title-block section-shell"><p class="vyshe-category">Hotel concept / Web &amp; 3D</p><h2 id="work-title">VYSHE</h2><span class="vyshe-scroll" aria-hidden="true">Scroll to explore <i data-lucide="arrow-down"></i></span></div>
+            </div>
+          </div>
+          <div class="vyshe-details section-shell">
+            <div class="vyshe-summary"><p class="eyebrow">Web / 3D / Lighting concept</p><h3 id="vyshe-title">A mountain<br /> hotel.</h3></div>
+            <div class="vyshe-description"><p>A self-initiated hotel concept. Explore the rooms, look out towards the mountains and change the lighting throughout the day.</p><dl class="project-facts"><div><dt>Context</dt><dd>Independent concept</dd></div><div><dt>Role</dt><dd>Concept, visualisation &amp; development</dd></div></dl><a class="text-action" href="https://sallyvally.github.io/belokurikha-light-experience/" target="_blank" rel="noopener noreferrer">Visit VYSHE <i data-lucide="arrow-up-right" aria-hidden="true"></i></a><p class="project-disclosure">A fictional hotel concept, not a commissioned project or operating property.</p></div>
+          </div>
+        </article>
+      </section>
+      <section class="music-work" id="music" aria-labelledby="track-title"><div class="section-shell music-layout">
+        <div class="music-copy"><p class="eyebrow">Selected work</p><h2 id="track-title">Music</h2></div>
+        <div class="track-player" id="track-player"><div class="track-label"><span>VAISEN / MUSIC</span><span id="track-duration">01:28</span></div><canvas id="track-waveform" width="720" height="180" aria-label="Music waveform"></canvas><audio id="portfolio-audio" controls preload="none" src="%BASE_URL%work/music.mp3">Your browser does not support audio playback.</audio><div class="custom-transport" hidden><button class="play-button icon-button" type="button" id="track-play" aria-label="Play music" title="Play" aria-pressed="false"><i data-lucide="play" aria-hidden="true"></i></button><div class="seek-controls"><label class="sr-only" for="track-seek">Seek music</label><input type="range" id="track-seek" min="0" max="88.163" step="0.1" value="0" /><div class="track-readout"><output id="track-time">0:00 / 1:28</output></div></div></div><p id="track-status" class="track-status" role="status"></p><a class="quiet-link" id="track-file" href="%BASE_URL%work/music.mp3" target="_blank" rel="noopener" hidden>Open the audio file <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+      </div></section>
+      <section class="perspective-section" id="perspective" aria-labelledby="perspective-title">
+        <div class="perspective-stage">
+          <div class="perspective-copy section-shell"><p class="eyebrow">The VAISEN mark</p><h2 id="perspective-title">Look<br /> again.</h2><p class="perspective-description">The mark, built in depth.<br /> <span class="perspective-instruction">Scroll to find the angle.</span></p></div>
+          <figure class="perspective-figure"><div class="perspective-render" aria-hidden="true"><img class="perspective-fallback" src="%BASE_URL%brand/vaisen-logo.svg" alt="" width="100" height="100" loading="lazy" /></div><div class="perspective-grip" role="slider" tabindex="-1" aria-label="Viewing angle of the VAISEN mark" aria-orientation="horizontal" aria-valuemin="-30" aria-valuemax="30" aria-valuenow="0" aria-valuetext="Aligned" aria-describedby="perspective-help" hidden></div><figcaption class="sr-only">Separate metal pieces at different depths align into the VAISEN logo as the viewpoint changes.</figcaption></figure>
+          <p class="sr-only" id="perspective-help">Drag horizontally to look around. Release to align the mark. With a keyboard, hold a left or right arrow. Home or Escape resets the view.</p>
+          <div class="perspective-bottom section-shell" aria-hidden="true"><span class="perspective-scroll">Keep scrolling <i data-lucide="arrow-down"></i></span><span class="perspective-line"><span></span></span></div>
+        </div>
+      </section>
+      <section class="disciplines section-shell" id="disciplines" aria-labelledby="disciplines-title">
+        <div class="section-heading"><p class="eyebrow">02 / Disciplines</p><h2 id="disciplines-title">What I work on.</h2></div>
+        <div class="discipline-list">
+          <a class="discipline-row" href="#top" data-explore="web"><span class="discipline-number">01</span><h3>Web &amp; interactive</h3><p>Website design and development, including interactive 3D.</p><i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+          <a class="discipline-row" href="#top" data-explore="cgi"><span class="discipline-number">02</span><h3>CGI &amp; image</h3><p>Product renders, architectural visualisation and animation.</p><i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+          <a class="discipline-row" href="#top" data-explore="music"><span class="discipline-number">03</span><h3>Original music</h3><i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+          <a class="discipline-row" href="#top" data-explore="smart-light"><span class="discipline-number">04</span><h3>Light &amp; space</h3><p>Lighting concepts and digital prototypes for architectural spaces.</p><i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+        </div>
+      </section>
+      <section class="studio-band" id="studio" aria-labelledby="studio-title"><div class="section-shell studio-layout"><p class="eyebrow">03 / The studio</p><div><h2 id="studio-title">I’m Egor Vaiserman.<br />This is VAISEN.</h2><p>I design and build websites, create 3D images and compose music. VAISEN is the studio where I bring that work together.</p><p>For project enquiries, write to me directly.</p></div></div></section>
+      <section class="contact section-shell" id="contact" aria-labelledby="contact-title"><p class="eyebrow">04 / Contact</p><div class="contact-layout"><h2 id="contact-title">What are you<br />working on?</h2><div><p>Tell me about the project, when you need it<br />and the budget you have in mind.</p><a class="contact-email" href="mailto:egorvajserman784@gmail.com?subject=Hello%20VAISEN">egorvajserman784@gmail.com <i data-lucide="arrow-up-right" aria-hidden="true"></i></a><button class="quiet-link copy-email" type="button" id="copy-email" title="Copy email address"><i data-lucide="copy" aria-hidden="true"></i> Copy email</button><output id="copy-status" role="status"></output></div></div></section>
+    </main>
+    <footer class="site-footer section-shell"><a class="brand" href="#top" aria-label="VAISEN home"><img class="brand-mark" src="%BASE_URL%brand/vaisen-logo.svg" width="36" height="36" alt="" loading="lazy" /></a><span>Independent design, image &amp; sound</span><a href="#top" class="quiet-link">Back to top <i data-lucide="arrow-up" aria-hidden="true"></i></a><span>&copy; 2026 VAISEN</span></footer>
+    <div class="brand-intro" id="brand-intro" role="dialog" aria-modal="true" aria-label="VAISEN introduction" hidden>
+      <div class="brand-intro-backdrop" aria-hidden="true"></div>
+      <div class="brand-intro-symbol" aria-hidden="true">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <path id="intro-v" pathLength="1" d="M80.0315 23.7132L50.2292 92.3407L20.1213 23.7132L7.89473 7.65932L33.7234 23.7132L50.2292 67.4632L66.4294 23.7132L92.1053 7.65932L80.0315 23.7132Z" />
+            <clipPath id="intro-v-clip"><use href="#intro-v" /></clipPath>
+            <linearGradient id="intro-v-metal" x1="0" y1="0" x2="100" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".34" stop-color="#74797b"/><stop offset=".5" stop-color="#f0ede6"/><stop offset=".72" stop-color="#b6b9b8"/><stop offset="1" stop-color="#fff"/></linearGradient>
+            <linearGradient id="intro-v-light"><stop stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+          </defs>
+          <use class="intro-v-outline" href="#intro-v" stroke="#c2c7c8" stroke-width=".3" pathLength="1" />
+          <g clip-path="url(#intro-v-clip)"><path class="intro-v-left" d="M0 0H50.24V100H0Z" fill="url(#intro-v-metal)"/><path class="intro-v-right" d="M50.22 0H100V100H50.22Z" fill="url(#intro-v-metal)"/><rect class="intro-v-glint" x="-32" y="0" width="28" height="130" fill="url(#intro-v-light)" transform="rotate(-24 50 50)"/></g>
+          <use class="intro-v-solid" href="#intro-v" fill="white" />
+        </svg>
+      </div>
+      <p class="brand-intro-name" aria-hidden="true">VAISEN</p>
+      <button class="brand-intro-skip" type="button">Skip intro <span aria-hidden="true">↗</span></button>
+    </div>
+    <script type="module" src="/src/site.js"></script>
+  </body>
+</html>

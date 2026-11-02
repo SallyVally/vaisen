@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#030405" />
+    <title>VAISEN / Core</title>
+  </head>
+  <body>
+    <main id="portrait-app">
+      <canvas id="portrait-scene" aria-label="VAISEN architectural tower on a wet stone foundation"></canvas>
+      <header class="portrait-header">
+        <a class="portrait-brand" href="%BASE_URL%" aria-label="VAISEN Core">VAISEN</a>
+        <output id="portrait-status" role="status">Loading</output>
+      </header>
+      <section class="portrait-title" aria-labelledby="portrait-title">
+        <h1 id="portrait-title">VAISEN</h1>
+        <p id="portrait-description">Independent design and<br class="desktop-break" /> technology studio.</p>
+        <span id="portrait-disciplines">Digital / CGI / Music / Spatial</span>
+      </section>
+      <footer class="portrait-footer">
+        <div class="portrait-assembly">
+          <nav class="portrait-mechanism" aria-label="Tower assembly">
+            <button type="button" data-assembly="core" aria-pressed="true" disabled>Core</button>
+            <button type="button" data-assembly="cgi" aria-pressed="false" disabled>CGI</button>
+            <button type="button" data-assembly="music" aria-pressed="false" disabled>Music</button>
+            <button type="button" data-assembly="web" aria-pressed="false" disabled>Web</button>
+            <button type="button" data-assembly="smart-light" aria-pressed="false" disabled>Light</button>
+          </nav>
+          <span id="assembly-caption" class="portrait-caption">VAISEN CORE</span>
+        </div>
+        <div id="portrait-lighting" class="portrait-lighting" role="group" aria-label="Smart Light scenario" hidden>
+          <button type="button" data-lighting="day" aria-pressed="true" disabled>Day</button>
+          <button type="button" data-lighting="evening" aria-pressed="false" disabled>Evening</button>
+        </div>
+        <div class="portrait-controls">
+          <label><input type="checkbox" id="portrait-atmosphere" checked /> Atmosphere</label>
+          <label><input type="checkbox" id="portrait-reflections" checked /> Reflections</label>
+          <label><input type="checkbox" id="portrait-motion" aria-label="Atmosphere motion" checked /> Motion</label>
+          <button type="button" id="portrait-retry" hidden>Reload</button>
+        </div>
+      </footer>
+    </main>
+    <script type="module" src="/src/tower-portrait.js"></script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "sourceSha256": "b86e9f8cd40349fd0d1febde26cfe2ab59ca266f6aa09759a85fe5c79df76958",
+  "structureUrl": "/smart-light-tower/smart-structure-v01.glb",
+  "structureTriangles": 106,
+  "structureSha256": "bfbb5a966c8e6b2533f3fed2d6b9e225e10f659f9c9e0cf710c9b4ac824a005c",
+  "method": "Original casing outside the window and above the exact roof plane; original roof emitters retained.",
+  "approvedStudy": "/smart-light/smart-light-v01.json",
+  "roomAndFrontAssetsUnchanged": true
+}

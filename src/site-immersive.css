@@ -1,0 +1,761 @@
+@font-face {
+  font-family: Manrope;
+  src: url(/fonts/manrope-latin-variable.woff2) format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+.immersive-site {
+  --signal: #d9b477;
+  --muted: #a3a4a5;
+  --line: #ffffff20;
+  background: #080a0b;
+  color: #e8e9e9;
+  font-family:
+    Manrope,
+    Arial,
+    sans-serif;
+}
+.immersive-site .skip-link {
+  background: var(--signal);
+  color: #151a1c;
+}
+.immersive-site .site-header {
+  position: absolute;
+  z-index: 5;
+  inset: 0 4% auto;
+  margin: 0;
+  width: auto;
+  height: 88px;
+  border-color: #ffffff13;
+}
+.immersive-site .brand {
+  font-size: 22px;
+  font-weight: 400;
+}
+.immersive-site .brand > span {
+  font-size: 20px;
+}
+.immersive-site .main-nav {
+  color: #c3c4c4;
+  font-size: 11px;
+  gap: 36px;
+}
+.immersive-site .header-contact {
+  font-size: 11px;
+}
+.immersive-site .hero {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: calc(100svh - 44px);
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #080a0b;
+}
+.immersive-site .hero-copy {
+  position: absolute;
+  z-index: 2;
+  top: 26%;
+  left: 7%;
+  width: min(32%, 440px);
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  text-shadow: 0 2px 16px #0007;
+}
+.immersive-site .hero-copy > .eyebrow {
+  margin-bottom: 28px;
+  font-size: 9px;
+  color: #acadae;
+}
+.immersive-site .status-dot {
+  background: var(--signal);
+}
+.immersive-site .hero h1 {
+  font-size: 106px;
+  line-height: 1.04;
+  font-weight: 200;
+  margin: 0 0 24px;
+}
+.immersive-site .hero h2 {
+  font-size: 29px;
+  font-weight: 300;
+  line-height: 1.4;
+  min-height: 82px;
+  margin: 0 0 16px;
+}
+.immersive-site .hero-description {
+  color: #a7a8a9;
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 350px;
+  min-height: 80px;
+}
+.immersive-site .hero-actions {
+  gap: 22px;
+  margin-top: 22px;
+  pointer-events: auto;
+}
+.immersive-site .hero-actions .text-action {
+  font-size: 11px;
+  gap: 18px;
+}
+.immersive-site .hero-actions .primary-action {
+  color: #e8e9e9;
+}
+.immersive-site .hero-actions .text-action + .text-action {
+  color: #a3a4a5;
+  border-color: transparent;
+}
+.immersive-site .hero-exhibit {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  min-width: 0;
+}
+.immersive-site .scene-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+}
+.immersive-site .scene-stage::after {
+  display: none;
+}
+.immersive-site .scene-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 1.2s ease;
+}
+.immersive-site #studio-scene {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  pointer-events: none;
+  background: #080a0b;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.immersive-site .hero[data-scene-ready=true] #studio-scene {
+  opacity: 1;
+}
+.immersive-site .hero[data-scene-ready=true] .scene-poster {
+  opacity: 0;
+}
+.immersive-site .scene-fallback {
+  inset: auto 4% 130px auto;
+  max-width: 240px;
+  padding: 0;
+  align-items: flex-end;
+  text-align: right;
+  background: none;
+  color: #a7a8a9;
+  font-size: 10px;
+}
+.immersive-site .scene-fallback p {
+  margin: 0 0 10px;
+}
+.immersive-site .hero-bottom {
+  position: absolute;
+  z-index: 2;
+  inset: auto 4% 27px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 13px 40px;
+  pointer-events: none;
+}
+.immersive-site .sector-nav {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  max-width: 550px;
+  gap: 26px;
+  padding-top: 9px;
+  border-top: 1px solid #ffffff24;
+  pointer-events: auto;
+}
+.immersive-site .sector-nav button {
+  min-height: 44px;
+  font-size: 11px;
+  background: none;
+}
+.immersive-site .sector-nav button > span {
+  display: inline;
+  color: #808283;
+  font: 8px monospace;
+}
+.immersive-site .sector-nav button svg {
+  width: 13px;
+  height: 13px;
+}
+.immersive-site .sector-nav button[aria-pressed=true] {
+  color: var(--signal);
+  border-color: var(--signal);
+}
+.immersive-site .exhibit-meta {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  justify-self: end;
+  align-self: end;
+  display: grid;
+  grid-template-columns: minmax(100px, 190px) auto 32px;
+  gap: 7px 22px;
+  padding: 0;
+  border: 0;
+  font: 8px/1.5 monospace;
+  pointer-events: auto;
+}
+.immersive-site .exhibit-meta > span {
+  grid-column: 1;
+  grid-row: 1;
+  color: #b9babb;
+}
+.immersive-site #scene-state {
+  grid-column: 1;
+  grid-row: 2;
+  color: #939596;
+  text-align: left;
+  margin: 0;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.immersive-site .exhibit-meta .icon-button {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  width: 32px;
+  height: 40px;
+}
+.immersive-site .exhibit-meta .icon-button svg {
+  width: 14px;
+  height: 14px;
+}
+.immersive-site .hero-discover {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  min-height: 24px;
+  font-size: 9px;
+  color: #969899;
+  pointer-events: auto;
+}
+.immersive-site .hero-discover svg {
+  width: 13px;
+  height: 13px;
+}
+.immersive-site .has-entrance .hero-intro > .eyebrow,
+.immersive-site .has-entrance .hero-intro > .hero-actions {
+  animation: vaisen-enter 1.1s cubic-bezier(.16, 1, .3, 1) both;
+}
+.immersive-site .has-entrance .hero-intro > :nth-child(2) {
+  animation-delay: .08s;
+}
+.immersive-site .has-entrance .hero-intro > :nth-child(3) {
+  animation-delay: .16s;
+}
+.immersive-site .has-entrance .hero-intro > :nth-child(4) {
+  animation-delay: .24s;
+}
+.immersive-site .has-entrance .hero-intro > :nth-child(5) {
+  animation-delay: .32s;
+}
+@keyframes vaisen-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.immersive-site .selected-work {
+  padding-top: 22px;
+  background: #101112;
+  color: #e0e1e1;
+  color-scheme: dark;
+}
+.immersive-site .section-heading {
+  padding-top: 0;
+}
+.immersive-site .section-heading h2 {
+  font-size: 40px;
+  font-weight: 300;
+}
+.immersive-site .section-aside {
+  color: #989a9b;
+}
+.immersive-site .project-copy .eyebrow {
+  color: #b5a58d;
+}
+.immersive-site .project-copy h3 {
+  font-weight: 300;
+}
+.immersive-site .project-copy .project-subtitle {
+  color: #c4c5c6;
+}
+.immersive-site .project-copy > p {
+  color: #a0a2a3;
+}
+.immersive-site .project-facts {
+  border-color: #ffffff24;
+}
+.immersive-site .project-facts dt {
+  color: #959798;
+}
+.immersive-site .project-copy .project-disclosure {
+  color: #959798;
+}
+.immersive-site .project-visit {
+  background: #dee2e3;
+  color: #151a1c;
+}
+.immersive-site .image-caption {
+  color: #999b9c;
+}
+.immersive-site .mood-switch {
+  border-color: #ffffff24;
+}
+.immersive-site .mood-switch button {
+  color: #a1a3a4;
+}
+.immersive-site .mood-switch button[aria-pressed=true] {
+  color: #d9b477;
+  border-color: #d9b477;
+}
+.immersive-site .music-work {
+  background: #181819;
+}
+.immersive-site .music-copy p {
+  color: #a4a5a6;
+}
+.immersive-site .track-label,
+.immersive-site .track-readout {
+  color: #989a9b;
+}
+.immersive-site .play-button {
+  border-color: #aa8c60;
+  background: #d9b477;
+  color: #151a1c;
+}
+.immersive-site .play-button:hover {
+  background: #e9c894;
+}
+.immersive-site .discipline-row p {
+  color: #a1a3a4;
+}
+.immersive-site .discipline-number {
+  color: #929495;
+}
+.immersive-site .studio-band {
+  background: #1c1c1d;
+  color: #e2e3e3;
+  color-scheme: dark;
+  border-block: 1px solid #ffffff18;
+}
+.immersive-site .studio-layout h2 {
+  font-weight: 300;
+}
+.immersive-site .studio-layout p:not(.eyebrow) {
+  color: #adaeaf;
+}
+.immersive-site .contact-layout h2 {
+  font-weight: 300;
+}
+.immersive-site .contact-layout p {
+  color: #adaeaf;
+}
+.immersive-site .quiet-link {
+  color: #abadae;
+}
+.immersive-site .site-footer > span {
+  color: #959798;
+}
+@media (max-width: 1439px) {
+  .immersive-site .hero h1 {
+    font-size: 88px;
+  }
+  .immersive-site .hero h2 {
+    font-size: 26px;
+    min-height: 74px;
+  }
+  .immersive-site .hero-copy {
+    width: min(33%, 400px);
+  }
+}
+@media (max-width: 1100px) {
+  .immersive-site .site-header {
+    inset-inline: 32px;
+  }
+  .immersive-site .hero h1 {
+    font-size: 66px;
+  }
+  .immersive-site .hero h2 {
+    font-size: 23px;
+    min-height: 65px;
+  }
+  .immersive-site .hero-copy {
+    left: 6%;
+    width: min(33%, 340px);
+  }
+  .immersive-site .hero-description {
+    font-size: 13px;
+    min-height: 92px;
+  }
+  .immersive-site .hero-actions {
+    gap: 18px;
+  }
+  .immersive-site .hero-actions .text-action {
+    font-size: 10px;
+  }
+  .immersive-site .hero-bottom {
+    inset-inline: 32px;
+    gap: 12px 28px;
+  }
+  .immersive-site .exhibit-meta {
+    grid-template-columns: minmax(90px, 140px) auto 28px;
+    gap: 6px 12px;
+  }
+  .immersive-site .sector-nav {
+    gap: 14px;
+    max-width: 440px;
+  }
+  .immersive-site .sector-nav button {
+    font-size: 10px;
+  }
+  .immersive-site .sector-nav button > span {
+    display: none;
+  }
+}
+@media (min-width: 741px) and (max-height: 900px) {
+  .immersive-site .hero-copy {
+    top: 23%;
+  }
+  .immersive-site .hero-copy > .eyebrow {
+    margin-bottom: 22px;
+  }
+  .immersive-site .hero h1 {
+    font-size: 76px;
+    margin-bottom: 18px;
+  }
+  .immersive-site .hero h2 {
+    font-size: 24px;
+    min-height: 68px;
+    margin-bottom: 12px;
+  }
+  .immersive-site .hero-description {
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 70px;
+  }
+  .immersive-site .hero-actions {
+    margin-top: 16px;
+  }
+  .immersive-site .hero-actions .text-action {
+    min-height: 40px;
+    padding-block: 10px;
+  }
+}
+@media (min-width: 741px) and (max-width: 900px) {
+  .immersive-site .hero h1 {
+    font-size: 66px;
+  }
+  .immersive-site .hero-actions .text-action + .text-action {
+    display: none;
+  }
+}
+@media (min-width: 741px) and (max-aspect-ratio: 115/100) {
+  .immersive-site .hero-copy {
+    top: 110px;
+    width: min(70%, 600px);
+  }
+  .immersive-site .hero-copy > .eyebrow {
+    margin-bottom: 20px;
+  }
+  .immersive-site .hero h2 {
+    min-height: 74px;
+  }
+  .immersive-site .hero-description {
+    max-width: 440px;
+    min-height: 54px;
+  }
+  .immersive-site .scene-poster {
+    object-fit: contain;
+    object-position: center 68%;
+  }
+}
+@media (max-width: 740px) {
+  .immersive-site .site-header {
+    inset-inline: 22px;
+    height: 66px;
+    gap: 14px;
+  }
+  .immersive-site .brand {
+    font-size: 18px;
+  }
+  .immersive-site .main-nav {
+    gap: 18px;
+    font-size: 10px;
+  }
+  .immersive-site .header-contact {
+    font-size: 10px;
+    gap: 7px;
+  }
+  .immersive-site .hero {
+    height: calc(100svh - 38px);
+    min-height: 0;
+    padding: 0;
+  }
+  .immersive-site .hero-copy {
+    top: 92px;
+    left: 24px;
+    width: calc(100% - 48px);
+    padding: 0;
+  }
+  .immersive-site .hero-copy > .eyebrow {
+    display: none;
+  }
+  .immersive-site .hero h1 {
+    font-size: 54px;
+    margin-bottom: 12px;
+  }
+  .immersive-site .hero h2 {
+    font-size: 20px;
+    line-height: 1.4;
+    min-height: 56px;
+    max-width: 340px;
+    margin-bottom: 8px;
+  }
+  .immersive-site .hero-description {
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 320px;
+    min-height: 60px;
+  }
+  .immersive-site .hero-actions {
+    gap: 24px;
+    margin-top: 12px;
+  }
+  .immersive-site .hero-actions .text-action {
+    min-height: 36px;
+    padding-block: 8px;
+    font-size: 10px;
+  }
+  .immersive-site .hero-actions .text-action + .text-action {
+    display: none;
+  }
+  .immersive-site .scene-stage {
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+  }
+  .immersive-site .scene-poster {
+    object-fit: contain;
+    object-position: center 68%;
+  }
+  .immersive-site .hero-bottom {
+    inset: auto 24px 18px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .immersive-site .sector-nav {
+    grid-column: 1;
+    grid-row: 1;
+    gap: 12px;
+    padding-top: 4px;
+    max-width: none;
+  }
+  .immersive-site .sector-nav button {
+    font-size: 10px;
+    min-height: 40px;
+  }
+  .immersive-site .sector-nav button > span {
+    display: none;
+  }
+  .immersive-site .exhibit-meta {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: stretch;
+    grid-template-columns: minmax(0, 1fr) auto 28px;
+    gap: 0 14px;
+  }
+  .immersive-site .exhibit-meta > span {
+    display: none;
+  }
+  .immersive-site #scene-state {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 7px;
+  }
+  .immersive-site .exhibit-meta .icon-button {
+    height: 30px;
+    grid-row: 1;
+  }
+  .immersive-site .hero-discover {
+    display: none;
+  }
+  .immersive-site .section-heading h2 {
+    font-size: 30px;
+  }
+  .immersive-site .selected-work {
+    padding-top: 18px;
+  }
+}
+@media (max-width: 420px) {
+  .immersive-site .main-nav a[href="#studio"] {
+    display: none;
+  }
+}
+@media (max-width: 370px) {
+  .immersive-site .site-header {
+    inset-inline: 18px;
+  }
+  .immersive-site .main-nav {
+    gap: 14px;
+  }
+  .immersive-site .hero-copy {
+    left: 20px;
+    width: calc(100% - 40px);
+    top: 86px;
+  }
+  .immersive-site .hero h1 {
+    font-size: 48px;
+  }
+  .immersive-site .hero h2 {
+    font-size: 19px;
+  }
+  .immersive-site .hero-description {
+    font-size: 11px;
+  }
+  .immersive-site .hero-actions {
+    gap: 18px;
+  }
+  .immersive-site .hero-actions .text-action {
+    font-size: 9px;
+    gap: 10px;
+  }
+  .immersive-site .hero-bottom {
+    inset-inline: 20px;
+  }
+  .immersive-site .sector-nav {
+    gap: 8px;
+  }
+}
+@media (min-width: 741px) and (max-height: 650px) {
+  .immersive-site .site-header {
+    height: 64px;
+  }
+  .immersive-site .hero-copy {
+    top: 23%;
+  }
+  .immersive-site .hero-copy > .eyebrow {
+    display: none;
+  }
+  .immersive-site .hero h1 {
+    font-size: 64px;
+    margin-bottom: 16px;
+  }
+  .immersive-site .hero h2 {
+    font-size: 22px;
+    min-height: 62px;
+    margin-bottom: 12px;
+  }
+  .immersive-site .hero-description {
+    font-size: 12px;
+    min-height: 64px;
+  }
+  .immersive-site .hero-actions {
+    margin-top: 12px;
+    gap: 20px;
+  }
+  .immersive-site .hero-actions .text-action {
+    padding-block: 8px;
+    min-height: 34px;
+    font-size: 9px;
+  }
+  .immersive-site .hero-bottom {
+    bottom: 16px;
+    gap: 3px 30px;
+  }
+  .immersive-site .hero-discover {
+    min-height: 20px;
+  }
+}
+@media (min-width: 741px) and (max-height: 450px) {
+  .immersive-site .site-header {
+    height: 52px;
+  }
+  .immersive-site .hero-copy {
+    top: 70px;
+  }
+  .immersive-site .hero h1 {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+  .immersive-site .hero h2 {
+    font-size: 18px;
+    min-height: 0;
+    margin-bottom: 8px;
+  }
+  .immersive-site .hero-description {
+    font-size: 11px;
+    line-height: 1.5;
+    min-height: 48px;
+  }
+  .immersive-site .hero-actions {
+    display: none;
+  }
+  .immersive-site .hero-discover {
+    display: none;
+  }
+  .immersive-site .hero-bottom {
+    bottom: 8px;
+  }
+  .immersive-site .sector-nav button {
+    min-height: 34px;
+  }
+}
+@media (max-width: 740px) and (max-height: 650px) {
+  .immersive-site .hero-copy {
+    top: 78px;
+  }
+  .immersive-site .hero h1 {
+    font-size: 45px;
+    margin-bottom: 10px;
+  }
+  .immersive-site .hero h2 {
+    font-size: 18px;
+    min-height: 50px;
+    margin-bottom: 7px;
+  }
+  .immersive-site .hero-description {
+    font-size: 11px;
+    min-height: 50px;
+  }
+  .immersive-site .hero-actions {
+    margin-top: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .immersive-site .has-entrance .hero-intro > * {
+    animation: none;
+  }
+  .immersive-site #studio-scene,
+  .immersive-site .scene-poster {
+    transition: none;
+  }
+}

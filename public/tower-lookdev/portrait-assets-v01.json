@@ -1,0 +1,86 @@
+{
+  "sourceSha256": "9e32b7e9179101beae6281a8e78bea63f3d7af006a650ade65fe010897bf22de",
+  "material": "Brushed platinum",
+  "materialAssetId": "148db97c-8df2-4c75-8696-c930c0a78f0f",
+  "maps": {
+    "color": {
+      "url": "/tower-lookdev/color-v01.jpg",
+      "sourceImage": "brushed_platinum_BaseColor.jpg",
+      "sha256": "2a8a84593c6d04ba150c81e840ee2c27eefb366f6299d0c9f24cae448d43cb8a",
+      "bytes": 297817,
+      "sourceSha256": "dbe9d329257d1206ca9556ea375e8813e47bb06e965d19a904f265bbadf6dcf9",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    "roughness": {
+      "url": "/tower-lookdev/roughness-v01.jpg",
+      "sourceImage": "brushed_platinum_Roughness.jpg",
+      "sha256": "24c0bb0a9601de424ed62643e3c14416bc186f443632fc528986f1e99567854f",
+      "bytes": 126171,
+      "sourceSha256": "84f9559bcd744b128741deb29e43753e984ad9d7545a085f0bd80eee79b243b2",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    "normal": {
+      "url": "/tower-lookdev/normal-v01.jpg",
+      "sourceImage": "brushed_platinum_Normal.jpg",
+      "sha256": "52b60ef9c813384cdc96a48289c0ca5fdf8127c602c9b85caa3d082a465fb4ad",
+      "bytes": 141705,
+      "sourceSha256": "5d26d3ba057e959f1bda4cdf2ed137f70be35f32f281bb2b8843b7d06d1c070d",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    "stoneNormal": {
+      "url": "/tower-lookdev/stoneNormal-v01.jpg",
+      "sourceImage": "garage_floor_nor_gl_4k.jpg.001",
+      "sha256": "2733221e815757d39c55487c6aabe5c44c5971316f3f12bdf28cfca43aaa45f2",
+      "bytes": 116332,
+      "sourceSha256": "8f47cda727a2ce66f9fa5b91e1f23e9ee5f28d5a63f18ff250ff5f1ca2fb0aaf",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    "stoneRoughness": {
+      "url": "/tower-lookdev/stoneRoughness-v01.jpg",
+      "sourceImage": "SP_2K_Roughness.jpg",
+      "sha256": "67dcac3eb9f06d7f1005b9b1158293dc3a0bab2ea079639a20dda3c872835daa",
+      "bytes": 177672,
+      "sourceSha256": "a29a44a4c838aec5864d6b54cff4fb7c26b9f12365caca0065234c6f9c9d5753",
+      "size": [
+        1024,
+        1024
+      ]
+    }
+  },
+  "letterUrl": "/tower-lookdev/letter-metal-v02.glb",
+  "letterTriangles": 1340,
+  "bounds": {
+    "min": [
+      -0.8999999761581421,
+      0.10490892827510834,
+      -5.667183876037598
+    ],
+    "max": [
+      0.8999999761581421,
+      12.755181312561035,
+      5.915585041046143
+    ]
+  },
+  "derivedBevelMeters": 0.012,
+  "sourceModified": false,
+  "metersPerTextureTile": 2.4,
+  "mechanismLetterUrl": "/tower-lookdev/letter-supported-v03.glb",
+  "mechanismLetterTriangles": 1476,
+  "mechanismPlateThickness": 0.035,
+  "mechanismPlateSource": "V_LEFT outer positive-X source faces",
+  "mechanismFrontUrl": "/tower-lookdev/cgi-supported-front-v03.glb",
+  "mechanismFrontTriangles": 1281,
+  "mechanismApertureClearance": 0.004
+}
