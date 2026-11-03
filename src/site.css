@@ -161,12 +161,6 @@ img {
   align-items: center;
   gap: 9px;
 }
-.status-dot {
-  width: 5px;
-  height: 5px;
-  background: var(--signal);
-  border-radius: 50%;
-}
 .hero h1 {
   margin: 0 0 26px;
   font-size: 100px;

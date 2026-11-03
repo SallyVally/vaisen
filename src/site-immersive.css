@@ -72,9 +72,6 @@
   font-size: 9px;
   color: #acadae;
 }
-.immersive-site .status-dot {
-  background: var(--signal);
-}
 .immersive-site .hero h1 {
   font-size: 106px;
   line-height: 1.04;
