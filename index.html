@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#080b0c" />
     <meta name="description" content="VAISEN is an independent studio for websites, CGI, original music and light. Make them look twice." />
     <title>VAISEN / Design, Image &amp; Sound</title>
+    <script>document.documentElement.classList.add('film-boot');setTimeout(()=>document.documentElement.classList.remove('film-boot'),12000)</script>
     <link rel="icon" href="%BASE_URL%brand/vaisen-logo.svg" type="image/svg+xml" />
     <link rel="preload" href="%BASE_URL%brand/vaisen-logo.svg" as="image" type="image/svg+xml" />
     <link rel="preload" href="%BASE_URL%fonts/manrope-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
@@ -13,7 +14,7 @@
     <link rel="stylesheet" href="/src/site-immersive.css" />
     <link rel="stylesheet" href="/src/site-story.css" />
     <link rel="stylesheet" href="/src/site-editorial.css" />
-    <link rel="stylesheet" href="/src/site-intro.css" />
+    <link rel="stylesheet" href="/src/site-opening.css" />
     <link rel="stylesheet" href="/src/site-brand.css" />
     <link rel="stylesheet" href="/src/site-perspective.css" />
     <link rel="stylesheet" href="/src/site-vyshe.css" />
@@ -47,7 +48,7 @@
           </section>
         </div>
         <div class="hero-exhibit" aria-label="VAISEN architectural world">
-          <div class="scene-stage"><img class="scene-poster" src="%BASE_URL%work/vaisen-a2-poster.webp" width="1600" height="900" alt="" fetchpriority="high" /><iframe id="studio-scene" title="VAISEN interactive architectural world" src="%BASE_URL%tower.html?v=1.0.0&amp;embedded=1&amp;composition=immersive&amp;art=a2" loading="eager" tabindex="-1"></iframe><div class="scene-fallback" id="scene-fallback" hidden><p>The live scene couldn't load.</p><a href="%BASE_URL%tower.html">Try the standalone scene <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></div>
+          <div class="scene-stage"><img class="scene-poster" src="%BASE_URL%work/vaisen-a2-poster.webp" width="1600" height="900" alt="" fetchpriority="high" /><iframe id="studio-scene" title="VAISEN interactive architectural world" data-scene-src="%BASE_URL%tower.html?v=1.1.0&amp;embedded=1&amp;composition=immersive&amp;art=a2" loading="eager" tabindex="-1"></iframe><div class="scene-fallback" id="scene-fallback" hidden><p>The live scene couldn't load.</p><a href="%BASE_URL%tower.html">Try the standalone scene <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></div>
           <div class="hero-bottom">
           <output class="sr-only" id="scene-state" aria-live="polite">Preparing the scene</output>
           <nav class="sector-nav" aria-label="Explore studio disciplines">
@@ -105,23 +106,10 @@
       <section class="contact section-shell" id="contact" aria-labelledby="contact-title"><p class="eyebrow">04 / Contact</p><div class="contact-layout"><h2 id="contact-title">What are you<br />working on?</h2><div><p>Tell me about the project, when you need it<br />and the budget you have in mind.</p><a class="contact-email" href="mailto:egorvajserman784@gmail.com?subject=Hello%20VAISEN">egorvajserman784@gmail.com <i data-lucide="arrow-up-right" aria-hidden="true"></i></a><button class="quiet-link copy-email" type="button" id="copy-email" title="Copy email address"><i data-lucide="copy" aria-hidden="true"></i> Copy email</button><output id="copy-status" role="status"></output></div></div></section>
     </main>
     <footer class="site-footer section-shell"><a class="brand" href="#top" aria-label="VAISEN home"><img class="brand-mark" src="%BASE_URL%brand/vaisen-logo.svg" width="36" height="36" alt="" loading="lazy" /></a><span>Independent design, image &amp; sound</span><a href="#top" class="quiet-link">Back to top <i data-lucide="arrow-up" aria-hidden="true"></i></a><span>&copy; 2026 VAISEN</span></footer>
-    <div class="brand-intro" id="brand-intro" role="dialog" aria-modal="true" aria-label="VAISEN introduction" hidden>
-      <div class="brand-intro-backdrop" aria-hidden="true"></div>
-      <div class="brand-intro-symbol" aria-hidden="true">
-        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <path id="intro-v" pathLength="1" d="M80.0315 23.7132L50.2292 92.3407L20.1213 23.7132L7.89473 7.65932L33.7234 23.7132L50.2292 67.4632L66.4294 23.7132L92.1053 7.65932L80.0315 23.7132Z" />
-            <clipPath id="intro-v-clip"><use href="#intro-v" /></clipPath>
-            <linearGradient id="intro-v-metal" x1="0" y1="0" x2="100" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".34" stop-color="#74797b"/><stop offset=".5" stop-color="#f0ede6"/><stop offset=".72" stop-color="#b6b9b8"/><stop offset="1" stop-color="#fff"/></linearGradient>
-            <linearGradient id="intro-v-light"><stop stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-          </defs>
-          <use class="intro-v-outline" href="#intro-v" stroke="#c2c7c8" stroke-width=".3" pathLength="1" />
-          <g clip-path="url(#intro-v-clip)"><path class="intro-v-left" d="M0 0H50.24V100H0Z" fill="url(#intro-v-metal)"/><path class="intro-v-right" d="M50.22 0H100V100H50.22Z" fill="url(#intro-v-metal)"/><rect class="intro-v-glint" x="-32" y="0" width="28" height="130" fill="url(#intro-v-light)" transform="rotate(-24 50 50)"/></g>
-          <use class="intro-v-solid" href="#intro-v" fill="white" />
-        </svg>
-      </div>
-      <p class="brand-intro-name" aria-hidden="true">VAISEN</p>
-      <button class="brand-intro-skip" type="button">Skip intro <span aria-hidden="true">↗</span></button>
+    <div class="site-opening" id="brand-intro" role="region" aria-label="VAISEN introduction" hidden>
+      <div class="opening-curtain" aria-hidden="true"></div><div class="opening-bottom" aria-hidden="true"></div>
+      <img class="opening-loading" src="%BASE_URL%brand/vaisen-logo.svg" width="56" height="60" alt="" />
+      <button class="opening-skip" type="button">Skip intro <span aria-hidden="true">↗</span></button>
     </div>
     <script type="module" src="/src/site.js"></script>
   </body>

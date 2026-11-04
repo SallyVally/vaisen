@@ -114,6 +114,7 @@ function createAtmosphere(renderer, { portrait = false, cacheScene = false, mixe
       uniform float time;
       uniform float strength;
       uniform float cinematic;
+      uniform float macroWeight;
       uniform float introProgress;
       uniform vec4 introLine;
       uniform float introAspect;
@@ -223,7 +224,7 @@ function createAtmosphere(renderer, { portrait = false, cacheScene = false, mixe
             vec3 sampleColor=texture2D(sceneColor,vUv+offset).rgb;
             glow+=sampleColor*smoothstep(0.62,0.95,max(sampleColor.r,max(sampleColor.g,sampleColor.b)));
           }
-          color+=glow*0.055;
+          color+=glow*0.055*macroWeight;
         }
         if(cinematic>0.5){
           vec3 halo=vec3(0.0);
@@ -232,11 +233,11 @@ function createAtmosphere(renderer, { portrait = false, cacheScene = false, mixe
             vec3 sampleColor=texture2D(sceneColor,vUv+offset).rgb;
             halo+=sampleColor*smoothstep(0.88,0.99,max(sampleColor.r,max(sampleColor.g,sampleColor.b)));
           }
-          color+=halo*.018;
+          color+=halo*.018*macroWeight;
           vec2 edge=(vUv-.5)*vec2(1.0,.85);
-          color*=1.0-.13*smoothstep(.18,.70,dot(edge,edge));
+          color*=1.0-.13*macroWeight*smoothstep(.18,.70,dot(edge,edge));
           float grain=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453)-.5;
-          color+=grain*.004*smoothstep(.015,.25,dot(color,vec3(.2126,.7152,.0722)));
+          color+=grain*.004*macroWeight*smoothstep(.015,.25,dot(color,vec3(.2126,.7152,.0722)));
         }
 
         if(liveLayer>.5){
@@ -261,6 +262,7 @@ function createAtmosphere(renderer, { portrait = false, cacheScene = false, mixe
         #include <colorspace_fragment>
       }
     ` });
+  material.uniforms.macroWeight = { value: 1 };
   if (analyticFog) material.fragmentShader = mobileFogShader(material.fragmentShader);
   const fxaaOptions = captureAA === "hybrid" ? { subpixel: 0.5, contrast: 8e-3 } : void 0;
   if (aa.fxaa) fuseCaptureFXAA(material, fxaaOptions);
@@ -338,6 +340,8 @@ function createAtmosphere(renderer, { portrait = false, cacheScene = false, mixe
     }
   }, setCinematic(enabled) {
     material.uniforms.cinematic.value = enabled ? 1 : 0;
+  }, setMacroWeight(value) {
+    material.uniforms.macroWeight.value = value;
   }, setMoodTint(tint) {
     material.uniforms.moodTint.value.copy(tint);
   }, setIntro(progress, line, aspect) {

@@ -1,0 +1,107 @@
+.film-boot::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 1000;
+  pointer-events: none;
+}
+.site-opening {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+.site-opening[hidden] {
+  display: none;
+}
+.opening-curtain {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: calc(1 - var(--film-opening,0));
+  pointer-events: none;
+}
+.opening-bottom {
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--film-bottom,44px);
+  background: #000;
+  opacity: calc(1 - var(--film-reveal,0));
+}
+.opening-loading {
+  position: absolute;
+  width: 56px;
+  height: 60px;
+  object-fit: contain;
+  top: calc(50% - 30px);
+  left: calc(50% - 28px);
+  opacity: 0;
+}
+.film-loading .opening-loading {
+  animation: opening-load 1.8s ease-in-out infinite;
+  animation-delay: 1s;
+}
+.opening-skip {
+  position: absolute;
+  right: max(4%, env(safe-area-inset-right));
+  bottom: max(30px, env(safe-area-inset-bottom));
+  min-height: 44px;
+  padding: 8px 0 8px 18px;
+  border: 0;
+  background: none;
+  color: #a5a7a8;
+  font:
+    400 10px/1 Manrope,
+    Arial,
+    sans-serif;
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: var(--film-ui,0);
+  transition: opacity .09s linear;
+}
+.film-loading .opening-skip {
+  opacity: .7;
+}
+.opening-skip:hover {
+  color: #fff;
+}
+.opening-skip:focus-visible {
+  outline: 1px solid #d9b477;
+  outline-offset: 6px;
+  opacity: 1;
+}
+.film-active .site-header {
+  opacity: var(--film-ui,0);
+  transition: opacity .09s linear;
+}
+.film-active .hero-copy,
+.film-active .hero-bottom {
+  opacity: var(--film-reveal,0);
+  transition: opacity .09s linear;
+}
+.film-active .scene-poster {
+  opacity: 0 !important;
+  transition: none !important;
+}
+.film-active .hero {
+  background: #000;
+}
+.film-active #studio-scene {
+  background: #000;
+}
+@keyframes opening-load {
+  0%, 100% {
+    opacity: .18;
+  }
+  50% {
+    opacity: .65;
+  }
+}
+@media (max-width: 740px) {
+  .opening-skip {
+    right: max(22px, env(safe-area-inset-right));
+    bottom: max(22px, env(safe-area-inset-bottom));
+    font-size: 11px;
+  }
+}

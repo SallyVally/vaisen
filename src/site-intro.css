@@ -1,9 +1,0 @@
-.immersive-site .hero.scene-intro-await .scene-poster {
-  opacity: 0;
-  transition: none;
-}
-.immersive-site .hero.scene-intro-pending .hero-intro > h1,
-.immersive-site .hero.scene-intro-pending .hero-intro > h2,
-.immersive-site .hero.scene-intro-pending .hero-intro > .hero-description {
-  opacity: 0;
-}

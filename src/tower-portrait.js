@@ -30,7 +30,7 @@ import { A2_CARDS, applyA2Materials, createA2Landscape, configureA2Lighting, upd
 import { STAGE_NAVIGATION_TIMING, StageFloorFocus, frameStageFloor, blendOrbitTransition, blendParallelOrbit } from "./stage-inspection.js";
 import { prepareCgiInspection, prepareInspectionGlass, cgiInspectionAtmosphere } from "./cgi-inspection-art.js";
 import { SiteCameraMotion } from "./site-camera-motion.js";
-import { SceneIntro, introLightPosition } from "./scene-intro.js";
+import { introLightPosition } from "./scene-intro.js";
 import { SectorLightMood } from "./sector-light-mood.js";
 import { InteriorMotion } from "./interior-motion.js";
 import { portraitPixelRatio } from "./tower-capture-aa.js";
@@ -174,15 +174,10 @@ async function start() {
   if (sceneLife) scene.add(sceneLife.group);
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 180);
   const cameraMotion = new SiteCameraMotion();
-  const sceneIntro = new SceneIntro(), introLine = new THREE.Vector4(), introBottom = new THREE.Vector3(), introTop = new THREE.Vector3();
+  let macroEntrance = null;
   const firstReveal = new FirstSectorReveal();
   let revealLightApplied = false;
   const introLight = stageA2 ? scene.getObjectByName("PORTRAIT_CORE_AREA") : null;
-  function restoreIntroLight() {
-    if (!introLight) return;
-    introLight.position.fromArray(introLightPosition(1, assemblyPose.cameraMix));
-    introLight.lookAt(0, 6, 0);
-  }
   const surfaceWork = mobileSurface ? new MobileSurfaceWork(scene) : null;
   const atmosphere = createAtmosphere(renderer, { portrait: true, cacheScene: true, captureAA, analyticFog, layeredScene: liveLayers });
   let directDirty = true, mobileCapture = false;
@@ -241,11 +236,6 @@ async function start() {
   function resize() {
     const width = Math.max(1, canvas.clientWidth), height = Math.max(1, canvas.clientHeight);
     const cinematic = stageA2 && !mobileViewport(width, height, coarsePointer) && width / height > 1.15;
-    if (!cinematic && sceneIntro.active) {
-      sceneIntro.finish();
-      atmosphere.setIntro(1);
-      restoreIntroLight();
-    }
     atmosphere.setCinematic(cinematic);
     cgiArt?.setCinematic(cinematic);
     const insets = immersive ? immersiveInsets(width, height, embeddedLayout) : { header: header.offsetHeight, footer: footer.offsetHeight };
@@ -365,6 +355,7 @@ async function start() {
   }
   function settleReducedMotion() {
     if (reduced.matches && !motionToggle.checked) {
+      stopMacro(true);
       navigation.request(navigation.requested, { immediate: true });
       releaseFX.reset();
     }
@@ -372,6 +363,26 @@ async function start() {
   reduced.addEventListener("change", settleReducedMotion);
   motionToggle.addEventListener("change", settleReducedMotion);
   window.addEventListener("hashchange", () => selectAssembly(sectorFromHash(location.hash)));
+  if (stageA2 && new URLSearchParams(location.search).get("intro") === "cinematic") {
+    try {
+      const { MacroEntrance } = await import("./macro-entrance.js");
+      macroEntrance = new MacroEntrance({ renderer, mainScene: scene, tower, landscape, materials, maps, farPose: () => overview, mobile: mobilePresentation, publish: (state) => window.parent.postMessage({ type: "vaisen-scene-intro-state", ...state }, location.origin) });
+    } catch (error) {
+      console.warn("VAISEN introduction unavailable", error);
+    }
+  }
+  function restoreMacro() {
+    camera.near = 0.1;
+    atmosphere.setMacroWeight(1);
+    cameraMotion.set(overview, true);
+    updateCamera();
+    invalidateScene(true);
+  }
+  function stopMacro(immediate = false) {
+    if (!macroEntrance || macroEntrance.disposed) return;
+    macroEntrance.skip(immediate);
+    if (macroEntrance.disposed) restoreMacro();
+  }
   prepareLightWork(scene);
   await renderer.compileAsync(scene, camera);
   if (reflectionWork) await reflectionWork.prepare(renderer, scene, camera);
@@ -380,6 +391,18 @@ async function start() {
   if (atmosphereToggle.checked) atmosphere.render(scene, camera, 0, steam, stageA2 ? inspectionAtmosphere() : 1);
   else renderer.render(scene, camera);
   if (shaderFailure) throw new Error("Portrait shader warm-up failed: " + shaderFailureMessage);
+  if (macroEntrance) {
+    try {
+      await macroEntrance.prepare(camera);
+      if (shaderFailure) throw new Error(shaderFailureMessage);
+    } catch (error) {
+      macroEntrance.release();
+      macroEntrance = null;
+      shaderFailure = false;
+      shaderFailureMessage = "";
+      console.warn("VAISEN introduction unavailable", error);
+    }
+  }
   for (const button of assemblyButtons) {
     button.disabled = false;
     button.addEventListener("click", () => selectAssembly(button.dataset.assembly));
@@ -402,15 +425,13 @@ async function start() {
       const command = sceneCommand(event, window.parent, location.origin);
       if (!command) return;
       if (command.sector) {
-        sceneIntro.skip();
+        stopMacro();
         selectAssembly(command.sector);
       }
       if (command.visible !== void 0) {
         embeddedVisible = command.visible;
         if (!embeddedVisible) {
-          sceneIntro.finish();
-          atmosphere.setIntro(1);
-          restoreIntroLight();
+          stopMacro(true);
           invalidateScene();
         }
       }
@@ -419,8 +440,8 @@ async function start() {
         motionToggle.dispatchEvent(new Event("change"));
       }
       if (command.audio) interiorMotion.setAudio(command.audio);
-      if (command.intro === "start" && stageA2 && !phoneViewport() && camera.aspect > 1.15 && motionToggle.checked && atmosphereToggle.checked && navigation.requested === "core") sceneIntro.start();
-      if (command.intro === "skip") sceneIntro.skip();
+      if (command.intro === "start" && motionToggle.checked && navigation.requested === "core") macroEntrance?.start();
+      if (command.intro === "skip") stopMacro(command.introImmediate);
       if (stageA2 && command.focus) {
         floorFocus.request(command.focus.sector, command.focus.floor, reduced.matches && !motionToggle.checked);
         updateCamera();
@@ -431,7 +452,7 @@ async function start() {
         resize();
       }
     });
-    window.parent.postMessage({ type: "vaisen-scene-ready", motion: motionToggle.checked }, location.origin);
+    window.parent.postMessage({ type: "vaisen-scene-ready", motion: motionToggle.checked, intro: Boolean(macroEntrance && !macroEntrance.disposed) }, location.origin);
   }
   let lastTime = 0, time = 0;
   let lastStatus = "";
@@ -448,6 +469,15 @@ async function start() {
     lastTime = milliseconds;
     if (document.hidden) return;
     renderer.info.reset();
+    if (macroEntrance?.active) {
+      const finished = macroEntrance.tick(dt);
+      macroEntrance.render(camera, atmosphere, steam);
+      if (finished) {
+        macroEntrance.release();
+        restoreMacro();
+      }
+      return;
+    }
     navigation.tick(dt);
     const revealChanged = firstReveal.tick(dt, { active: navigation.active, requested: navigation.requested, time: mechanism.time, route: Boolean(navigation.route), enabled: stageA2 && motionToggle.checked && !phoneViewport() && camera.aspect > 1.15 });
     const focusChanged = stageA2 && floorFocus.tick(dt);
@@ -495,7 +525,7 @@ async function start() {
       directDirty = true;
     }
     const revealLightWeight = reduced.matches ? 0 : firstReveal.weight;
-    if (introLight && !sceneIntro.active && (sceneLife || revealLightWeight > 0 || revealLightApplied)) {
+    if (introLight && (sceneLife || revealLightWeight > 0 || revealLightApplied)) {
       const base = sceneLife ? sceneLife.lightPosition(introLightPosition(1, assemblyPose.cameraMix), liveLayers ? 0 : 1).toArray() : introLightPosition(1, assemblyPose.cameraMix);
       const previous = introLight.position.clone();
       introLight.position.fromArray(firstRevealLight(base, revealLightWeight, firstReveal.travel, firstReveal.sector));
@@ -536,16 +566,7 @@ async function start() {
     }
     assemblyCaption.textContent = mechanism.time > 0 ? navigation.active === "music" ? "MUSIC / SCORING" : navigation.active === "smart-light" ? "LIGHT / SPATIAL" : navigation.active === "web" ? "WEB / DIGITAL" : "CGI / PRODUCTION" : navigation.route ? "TOWER / TRANSIT" : "VAISEN CORE";
     const captureScale = 1, fogScale = 1;
-    if (sceneIntro.tick(dt)) {
-      introLight.position.fromArray(introLightPosition(sceneIntro.progress, assemblyPose.cameraMix));
-      introLight.lookAt(0, 6, 0);
-      invalidateScene();
-      introBottom.set(0.725, 0.3, 0).project(camera);
-      introTop.set(0.725, 4.1, 0).project(camera);
-      introLine.set((introBottom.x + 1) / 2, (introBottom.y + 1) / 2, (introTop.x + 1) / 2, (introTop.y + 1) / 2);
-      atmosphere.setIntro(sceneIntro.progress, introLine, camera.aspect);
-    }
-    atmosphere.setLayered(liveLayers && mobileCapture && !navigation.busy && !floorFocus.busy && !cameraChanged && lightBlend.value === lightBlend.target && !sceneIntro.active);
+    atmosphere.setLayered(liveLayers && mobileCapture && !navigation.busy && !floorFocus.busy && !cameraChanged && lightBlend.value === lightBlend.target);
     if (atmosphereToggle.checked) atmosphere.render(scene, camera, time, steam, stageA2 ? inspectionAtmosphere() : 1, assemblyPose.releaseMist, releaseFX, captureScale, fogScale);
     else if (captureAA === "hybrid" || captureAA === "fxaa") atmosphere.renderWithoutAtmosphere(scene, camera, captureScale);
     else if (directDirty) {

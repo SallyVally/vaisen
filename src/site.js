@@ -6,11 +6,9 @@ import { DisciplineDeck } from "./site-disciplines.js";
 import { MusicPreview } from "./site-music.js";
 import { MusicVisualTransport } from "./site-music-motion.js";
 import { TypeMotion } from "./site-type-motion.js";
-import { SiteIntro } from "./site-intro.js";
-import { BrandIntro } from "./site-brand-intro.js";
+import { SiteOpening } from "./site-opening.js";
 import { mountPerspective } from "./site-perspective.js";
 import { mountVyshe } from "./site-vyshe.js";
-import { mobileViewport } from "./tower-mobile-quality.js";
 const icons = { ArrowUpRight, ArrowDown, ArrowUp, ArrowLeft, ArrowRight, CornerUpLeft, Volume2, VolumeX, Play, Pause, Copy };
 const renderIcons = () => createIcons({ icons });
 renderIcons();
@@ -22,8 +20,12 @@ const audio = document.querySelector("#portfolio-audio"), wave = document.queryS
 const soundButton = document.querySelector("#preview-sound");
 const systemMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 const fullMotion = new URLSearchParams(window.location?.search ?? "").get("motion") === "full";
-const coarsePointer = window.matchMedia?.("(pointer: coarse)").matches ?? false;
 const reduced = fullMotion ? { matches: false } : systemMotion;
+const openingEligible = !reduced?.matches && (!location.hash || location.hash === "#top");
+const sceneUrl = new URL(frame.dataset.sceneSrc, location.href);
+sceneUrl.searchParams.set("intro", openingEligible ? "cinematic" : "none");
+if (fullMotion) sceneUrl.searchParams.set("motion", "full");
+frame.src = sceneUrl.href;
 if (fullMotion) document.documentElement.dataset.uiMotion = "full";
 const typeMotion = new TypeMotion(reduced);
 const introCopy = [...intro.querySelectorAll("h1,h2,.hero-description")].map((node) => ({ node, text: node.textContent }));
@@ -85,22 +87,9 @@ for (const node of [hero, copy, intro, document.querySelector("#story-content"),
 function animateIntro(animate = true) {
   introCopy.forEach(({ node, text }, index) => typeMotion.set(node, text, { animate, headline: index < 2, delay: index * 110 }));
 }
-if (!reduced?.matches) hero.classList.add("has-entrance");
-const entrance = new SiteIntro({ hero, reduced, onReveal: (animate) => animateIntro(animate || Boolean(reduced?.matches)), deferReduced: true, maxWait: 4200, textDelay: 800 });
-const introBounds = hero.getBoundingClientRect();
-if (mobileViewport(introBounds.width, introBounds.height, coarsePointer) || introBounds.width / introBounds.height <= 1.15) entrance.cancel();
-const branding = new BrandIntro({ root: document.querySelector("#brand-intro"), target: document.querySelector(".site-header .brand-mark"), reduced, onReveal() {
-  const bounds = hero.getBoundingClientRect(), desktop = !mobileViewport(bounds.width, bounds.height, coarsePointer) && bounds.width / bounds.height > 1.15;
-  if (ready && desktop) {
-    if (entrance.sceneReady()) send({ type: "vaisen-scene-intro", action: "start" });
-  } else {
-    entrance.cancel();
-    animateIntro();
-  }
-} });
+const opening = new SiteOpening({ root: document.querySelector("#brand-intro"), hero, copy, reduced, send, onReveal: animateIntro, eligible: openingEligible });
 const fail = () => {
-  branding.skip();
-  entrance.cancel();
+  opening.cancel(true);
   fallback.hidden = false;
   hero.dataset.sceneReady = "false";
   sceneState.textContent = "Scene unavailable";
@@ -108,9 +97,7 @@ const fail = () => {
 const timeout = setTimeout(fail, 6e4);
 function selectSector(sector) {
   if (!SITE_SECTORS.includes(sector)) return;
-  branding.skip();
-  entrance.cancel();
-  if (ready) send({ type: "vaisen-scene-intro", action: "skip" });
+  opening.cancel();
   typeMotion.depart(intro.hidden ? document.querySelector("#story-content") : intro, copy);
   typeMotion.stop({ departures: false });
   requested = sector;
@@ -217,12 +204,13 @@ window.addEventListener("message", (event) => {
     hero.dataset.sceneReady = "true";
     send({ type: "vaisen-scene-motion", motion: true });
     musicMotion.publish();
-    branding.sceneReady();
+    opening.sceneReady(data.intro);
     layoutKey = "";
     reportLayout();
     send({ type: "vaisen-scene-visibility", visible });
     if (requested !== "core") selectSector(requested);
-  } else if (data?.type === "vaisen-scene-status" && typeof data.message === "string") sceneState.textContent = data.message.slice(0, 80);
+  } else if (data?.type === "vaisen-scene-intro-state") opening.update(data);
+  else if (data?.type === "vaisen-scene-status" && typeof data.message === "string") sceneState.textContent = data.message.slice(0, 80);
   else if (data?.type === "vaisen-scene-error") {
     clearTimeout(timeout);
     fail();

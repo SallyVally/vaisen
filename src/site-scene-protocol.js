@@ -8,7 +8,7 @@ function sceneCommand(event, source, origin) {
   if (data?.type === "vaisen-scene-visibility" && typeof data.visible === "boolean") return { visible: data.visible };
   if (data?.type === "vaisen-scene-motion" && typeof data.motion === "boolean") return { motion: data.motion };
   if (data?.type === "vaisen-scene-audio" && Number.isFinite(data.time) && data.time >= 0 && data.time <= 86400 && Number.isFinite(data.level) && data.level >= 0 && data.level <= 1 && typeof data.playing === "boolean") return { audio: { time: data.time, level: data.level, playing: data.playing } };
-  if (data?.type === "vaisen-scene-intro" && ["start", "skip"].includes(data.action)) return { intro: data.action };
+  if (data?.type === "vaisen-scene-intro" && ["start", "skip"].includes(data.action)) return { intro: data.action, introImmediate: data.immediate === true };
   if (data?.type === "vaisen-scene-layout" && [data.header, data.footer].every((value) => Number.isFinite(value) && value >= 0 && value <= 4096) && (data.opaqueTop === void 0 || Number.isFinite(data.opaqueTop) && data.opaqueTop >= 0 && data.opaqueTop <= 4096)) return { layout: { header: data.header, footer: data.footer, ...data.opaqueTop === void 0 ? {} : { opaqueTop: data.opaqueTop } } };
   return null;
 }
