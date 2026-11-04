@@ -8,6 +8,9 @@ import { DURATION, smooth, shotAt, applyShot } from "./macro-shot.js";
 import { optimizePortraitLightWork } from "./tower-light-work.js";
 import { batchPortraitModules } from "./tower-rigid-batches.js";
 import { MobileSurfaceWork } from "./tower-mobile-surface.js";
+import { MobileReflectionProxy } from "./tower-mobile-reflection.js";
+import { optimizeAreaTree } from "./tower-area-work.js";
+import { reduceBakedInteriorShadows, simplifyRoughLandscapeArea } from "./tower-crisp-detail.js";
 function cloneStage(source, cache) {
   const material = (original) => {
     if (!cache.has(original)) {
@@ -72,7 +75,8 @@ class MacroEntrance {
     this.rig.traverse((light) => {
       if (light.isLight) this.lights.push({ light, intensity: light.intensity });
     });
-    this.water = createWetSurface(maps.stoneNormal, mobile ? 512 : 768, { crop: true });
+    this.reflectionWork = mobile ? new MobileReflectionProxy() : null;
+    this.water = createWetSurface(maps.stoneNormal, mobile ? 512 : 768, { crop: true, captureWork: this.reflectionWork, depthFirst: mobile });
     this.scene.add(this.water);
     this.detail = { value: 1 };
     this.world = { value: 0 };
@@ -92,11 +96,21 @@ class MacroEntrance {
     if (!mobile) area(13359598, 1.8, 2.8, 5.8, [4.8, 12.4, 6.1], [0.9, 10, 4.9], [1.6, 3.8]);
     area(16766880, 12, 0.055, 3.5, [1.1, 10.2, 6.7], [0.9, 10, 4.9], [0.55, 2.2]);
     if (mobile) {
+      reduceBakedInteriorShadows(this.scene);
       batchPortraitModules(this.scene);
       optimizePortraitLightWork(this.scene);
+      optimizeAreaTree(this.scene, { world: true });
+      simplifyRoughLandscapeArea(this.scene);
       new MobileSurfaceWork(this.scene).register(this.scene);
+      this.reflectionWork.register(this.scene);
     }
     fadeWorld(this.scene, this.world, this.hero.materials);
+    this.worldMeshes = [];
+    if (mobile) this.scene.traverse((object) => {
+      if (!object.isMesh || !object.visible) return;
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      if (materials.every((material) => !this.hero.materials.has(material))) this.worldMeshes.push(object);
+    });
     const reflect = this.water.onBeforeRender, world = this.world;
     this.water.onBeforeRender = function(...args) {
       if (world.value > 0) reflect.apply(this, args);
@@ -114,6 +128,7 @@ class MacroEntrance {
     applyShot(warm, shotAt(3, this.farPose()));
     this.hero.update(1);
     await this.renderer.compileAsync(this.scene, warm);
+    if (this.reflectionWork) await this.reflectionWork.prepare(this.renderer, this.scene, warm);
   }
   start() {
     if (this.disposed || this.started) return false;
@@ -154,6 +169,7 @@ class MacroEntrance {
     this.detail.value = pose.detail;
     this.hero.update(pose.detail);
     this.world.value = pose.world;
+    for (const object of this.worldMeshes) object.visible = pose.world > 0;
     const boost = THREE.MathUtils.lerp(1, this.hero.lightBoost, pose.light);
     this.scene.environmentIntensity = 0.38 * boost * smooth(1.3, 3.6, this.age);
     this.scene.fog.density = 0.012 * (1 - post);
@@ -169,7 +185,8 @@ class MacroEntrance {
     atmosphere.setLayered(false);
     atmosphere.setMacroWeight(post);
     atmosphere.invalidateScene();
-    atmosphere.render(this.scene, camera, 0, steam, post);
+    if (this.mobile && post === 0) atmosphere.renderWithoutAtmosphere(this.scene, camera);
+    else atmosphere.render(this.scene, camera, 0, steam, post);
     this.notify(pose);
   }
   release() {
@@ -187,6 +204,7 @@ class MacroEntrance {
       if (object.isLight) object.shadow?.map?.dispose();
     });
     this.water.getRenderTarget().dispose();
+    this.reflectionWork?.dispose();
     this.hero.dispose();
     for (const geometry of geometries) geometry.dispose();
     for (const material of materials) material.dispose();
@@ -199,6 +217,8 @@ class MacroEntrance {
     this.macroRig = null;
     this.strip = null;
     this.lights = [];
+    this.worldMeshes = [];
+    this.reflectionWork = null;
     this.publish({ active: false, progress: 1, opening: 1, reveal: 1, ui: 1 });
   }
 }

@@ -6,7 +6,7 @@ function hash(x, y = 0) {
   return ((n ^ n >>> 16) >>> 0) / 4294967295;
 }
 function brushedMaps(renderer, mobile = false) {
-  const size = mobile ? 1024 : 2048, heights = new Float32Array(size * size), normals = new Uint8Array(size * size * 4), roughness = new Uint8Array(size * size * 4);
+  const size = mobile ? 1024 : 2048, heights = new Float32Array(size * size), normals = new Uint8Array(size * size * 4), roughness = mobile ? null : new Uint8Array(size * size * 4);
   for (let y = 0; y < size; y++) {
     const block = y / 256, blend = block % 1, by = Math.floor(block), e = blend * blend * (3 - 2 * blend);
     for (let x = 0; x < size; x++) {
@@ -23,7 +23,8 @@ function brushedMaps(renderer, mobile = false) {
     const length = Math.hypot(dx, dy, 1);
     normals.set([Math.round(127.5 - dx / length * 127.5), Math.round(127.5 - dy / length * 127.5), Math.round(127.5 + 127.5 / length), 255], i);
     const r = Math.round(166 + heights[index] * 42 + hash(x, y) * 5);
-    roughness.set([r, r, r, 255], i);
+    if (mobile) normals[i + 3] = r;
+    else roughness.set([r, r, r, 255], i);
   }
   const make = (bytes) => {
     const texture = new THREE.DataTexture(bytes, size, size, THREE.RGBAFormat);
@@ -36,7 +37,8 @@ function brushedMaps(renderer, mobile = false) {
     texture.needsUpdate = true;
     return texture;
   };
-  return { normal: make(normals), roughness: make(roughness) };
+  const normal = make(normals);
+  return { normal, roughness: mobile ? normal : make(roughness) };
 }
 function groupedGeometry(original) {
   const geometry = original.geometry.clone(), p = geometry.attributes.position, index = geometry.index, front = [], edge = [];
@@ -65,7 +67,7 @@ function averageColor(texture) {
   for (let i = 0; i < data.length; i += 4) result.add(pixel.setRGB(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255, THREE.SRGBColorSpace));
   return result.multiplyScalar(1 / 1024);
 }
-function blendSurface(material, maps, detail, mean) {
+function blendSurface(material, maps, detail, mean, packed = false) {
   const compile = material.onBeforeCompile.bind(material), key = material.customProgramCacheKey.bind(material);
   material.onBeforeCompile = (shader) => {
     compile(shader);
@@ -76,17 +78,26 @@ function blendSurface(material, maps, detail, mean) {
     shader.vertexShader = `varying vec2 vMacroUv;
 ${shader.vertexShader}`.replace("#include <uv_vertex>", "#include <uv_vertex>\nvMacroUv=uv;");
     shader.fragmentShader = `varying vec2 vMacroUv;uniform float uMacroDetail;uniform vec3 uMeanColor;uniform sampler2D uMainNormal;uniform sampler2D uMainRoughness;
-${shader.fragmentShader}`.replace("#include <normal_fragment_maps>", THREE.ShaderChunk.normal_fragment_maps.replaceAll("texture2D( normalMap, vNormalMapUv ).xyz", "mix(texture2D(uMainNormal,vMacroUv).xyz,texture2D(normalMap,vNormalMapUv).xyz,uMacroDetail)")).replace("#include <roughnessmap_fragment>", THREE.ShaderChunk.roughnessmap_fragment.replace("texture2D( roughnessMap, vRoughnessMapUv )", "mix(texture2D(uMainRoughness,vMacroUv),texture2D(roughnessMap,vRoughnessMapUv),uMacroDetail)")).replace("#include <map_fragment>", THREE.ShaderChunk.map_fragment.replace("diffuseColor *= sampledDiffuseColor;", "diffuseColor *= mix(sampledDiffuseColor,vec4(uMeanColor,1.0),uMacroDetail*.95);"));
+${shader.fragmentShader}`.replace("#include <normal_fragment_maps>", THREE.ShaderChunk.normal_fragment_maps.replaceAll("texture2D( normalMap, vNormalMapUv ).xyz", packed ? "vaisenMacroNormal" : "mix(texture2D(uMainNormal,vMacroUv).xyz,texture2D(normalMap,vNormalMapUv).xyz,uMacroDetail)")).replace("#include <roughnessmap_fragment>", THREE.ShaderChunk.roughnessmap_fragment.replace("texture2D( roughnessMap, vRoughnessMapUv )", packed ? "vec4(vaisenMacroRoughness)" : "mix(texture2D(uMainRoughness,vMacroUv),texture2D(roughnessMap,vRoughnessMapUv),uMacroDetail)")).replace("#include <map_fragment>", THREE.ShaderChunk.map_fragment.replace("diffuseColor *= sampledDiffuseColor;", "diffuseColor *= mix(sampledDiffuseColor,vec4(uMeanColor,1.0),uMacroDetail*.95);"));
+    if (packed) shader.fragmentShader = shader.fragmentShader.replace("void main() {", `void main() {
+      vec4 vaisenMacroSample=texture2D(normalMap,vNormalMapUv);
+      vec3 vaisenMacroNormal=vaisenMacroSample.xyz;
+      float vaisenMacroRoughness=vaisenMacroSample.a;
+      if(uMacroDetail<1.0){
+        vaisenMacroNormal=mix(texture2D(uMainNormal,vMacroUv).xyz,vaisenMacroNormal,uMacroDetail);
+        vaisenMacroRoughness=mix(texture2D(uMainRoughness,vMacroUv).g,vaisenMacroRoughness,uMacroDetail);
+      }
+    `);
   };
-  material.customProgramCacheKey = () => `${key()}-macro-surface-v3`;
+  material.customProgramCacheKey = () => `${key()}-macro-surface-v3${packed ? "-packed" : ""}`;
 }
 function createDetailTower(tower, materials, maps, renderer, detail, { mobile = false } = {}) {
   const textures = brushedMaps(renderer, mobile);
   const face = displayPbrMaterial(new THREE.MeshPhysicalMaterial({ name: "VAISEN / Macro satin titanium", color: new THREE.Color(0.18, 0.205, 0.24), map: maps.color, metalness: 1, roughness: 0.34, roughnessMap: textures.roughness, normalMap: textures.normal, normalScale: new THREE.Vector2(0.21, 0.21), anisotropy: 0.82, anisotropyRotation: Math.PI / 2, clearcoat: 0.16, clearcoatRoughness: 0.16, envMapIntensity: 1.4 }));
   const edge = displayPbrMaterial(new THREE.MeshPhysicalMaterial({ name: "VAISEN / Polished cut", color: new THREE.Color(0.32, 0.35, 0.39), map: maps.color, metalness: 1, roughness: 0.19, roughnessMap: textures.roughness, normalMap: textures.normal, normalScale: new THREE.Vector2(0.035, 0.035), anisotropy: 0.3, clearcoat: 0.2, clearcoatRoughness: 0.1, envMapIntensity: 1.15 }));
   const mean = averageColor(maps.color);
-  blendSurface(face, maps, detail, mean);
-  blendSurface(edge, maps, detail, mean);
+  blendSurface(face, maps, detail, mean, mobile);
+  blendSurface(edge, maps, detail, mean, mobile);
   const originals = [];
   tower.updateMatrixWorld(true);
   tower.traverse((object) => {
@@ -99,8 +110,7 @@ function createDetailTower(tower, materials, maps, renderer, detail, { mobile = 
   const targetColor = materials.body.color.clone(), average = targetColor.clone().multiply(mean);
   const lightBoost = THREE.MathUtils.clamp((0.18 + 0.205 + 0.24) / (average.r + average.g + average.b), 1, 5);
   return { materials: new Set([face, edge]), lightBoost, dispose() {
-    textures.normal.dispose();
-    textures.roughness.dispose();
+    for (const texture of new Set(Object.values(textures))) texture.dispose();
   }, update(weight) {
     const blend = 1 - weight;
     face.color.copy(targetColor);

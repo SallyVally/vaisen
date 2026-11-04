@@ -394,6 +394,7 @@ async function start() {
   if (macroEntrance) {
     try {
       await macroEntrance.prepare(camera);
+      if (mobilePresentation) await atmosphere.prepareCopy();
       if (shaderFailure) throw new Error(shaderFailureMessage);
     } catch (error) {
       macroEntrance.release();
