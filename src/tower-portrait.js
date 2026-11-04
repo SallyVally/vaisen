@@ -393,8 +393,7 @@ async function start() {
   if (shaderFailure) throw new Error("Portrait shader warm-up failed: " + shaderFailureMessage);
   if (macroEntrance) {
     try {
-      await macroEntrance.prepare(camera);
-      if (mobilePresentation) await atmosphere.prepareCopy();
+      await macroEntrance.prepare(camera, atmosphere, steam);
       if (shaderFailure) throw new Error(shaderFailureMessage);
     } catch (error) {
       macroEntrance.release();

@@ -21,6 +21,7 @@
   background: #000;
   opacity: calc(1 - var(--film-opening,0));
   pointer-events: none;
+  transition: opacity .09s linear;
 }
 .opening-bottom {
   position: absolute;
@@ -89,6 +90,17 @@
 }
 .film-active #studio-scene {
   background: #000;
+}
+.film-active .hero[data-scene-ready=true] #studio-scene {
+  opacity: 1;
+  transition: none;
+}
+html[data-ui-motion=full].film-active .opening-curtain,
+html[data-ui-motion=full].film-active .opening-skip,
+html[data-ui-motion=full].film-active .site-header,
+html[data-ui-motion=full].film-active .hero-copy,
+html[data-ui-motion=full].film-active .hero-bottom {
+  transition: opacity .09s linear !important;
 }
 @keyframes opening-load {
   0%, 100% {

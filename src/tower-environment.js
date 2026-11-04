@@ -369,6 +369,15 @@ function createAtmosphere(renderer, { portrait = false, cacheScene = false, mixe
     } finally {
       screenMesh.material = original;
     }
+  }, async prepareScene(scene, camera, captureWork = null) {
+    const previous = renderer.getRenderTarget();
+    try {
+      renderer.setRenderTarget(currentTarget);
+      await renderer.compileAsync(scene, camera);
+      if (captureWork) await captureWork.prepare(renderer, scene, camera);
+    } finally {
+      renderer.setRenderTarget(previous);
+    }
   }, invalidateScene() {
     captureCache.invalidate();
     layers?.invalidate();

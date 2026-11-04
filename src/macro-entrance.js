@@ -11,6 +11,7 @@ import { MobileSurfaceWork } from "./tower-mobile-surface.js";
 import { MobileReflectionProxy } from "./tower-mobile-reflection.js";
 import { optimizeAreaTree } from "./tower-area-work.js";
 import { reduceBakedInteriorShadows, simplifyRoughLandscapeArea } from "./tower-crisp-detail.js";
+import { skipDarkLights, waitForGpu } from "./macro-startup.js";
 function cloneStage(source, cache) {
   const material = (original) => {
     if (!cache.has(original)) {
@@ -101,6 +102,7 @@ class MacroEntrance {
       optimizePortraitLightWork(this.scene);
       optimizeAreaTree(this.scene, { world: true });
       simplifyRoughLandscapeArea(this.scene);
+      skipDarkLights(this.hero.materials);
       new MobileSurfaceWork(this.scene).register(this.scene);
       this.reflectionWork.register(this.scene);
     }
@@ -122,13 +124,33 @@ class MacroEntrance {
     this.lastPublish = -Infinity;
     this.skipping = null;
   }
-  async prepare(camera) {
+  async prepare(camera, atmosphere = null, steam = []) {
     const warm = camera.clone();
     warm.near = 8e-3;
     applyShot(warm, shotAt(3, this.farPose()));
     this.hero.update(1);
-    await this.renderer.compileAsync(this.scene, warm);
-    if (this.reflectionWork) await this.reflectionWork.prepare(this.renderer, this.scene, warm);
+    if (this.mobile) this.hero.prepare();
+    if (this.mobile && atmosphere) await atmosphere.prepareScene(this.scene, warm, this.reflectionWork);
+    else {
+      await this.renderer.compileAsync(this.scene, warm);
+      if (this.reflectionWork) await this.reflectionWork.prepare(this.renderer, this.scene, warm);
+    }
+    if (this.mobile && atmosphere) {
+      await atmosphere.prepareCopy();
+      try {
+        for (const seconds of [3, 9, 16.5, 0]) {
+          this.age = seconds;
+          this.render(warm, atmosphere, steam, false);
+          await waitForGpu(this.renderer);
+        }
+      } finally {
+        this.age = 0;
+        this.detail.value = 1;
+        this.hero.update(1);
+        atmosphere.setMacroWeight(1);
+        atmosphere.invalidateScene();
+      }
+    }
   }
   start() {
     if (this.disposed || this.started) return false;
@@ -162,7 +184,7 @@ class MacroEntrance {
     this.lastPublish = this.age;
     this.publish({ active: true, progress: this.age / DURATION, opening: pose.opening, reveal: pose.reveal, ui: smooth(0.6, 2.2, this.age) });
   }
-  render(camera, atmosphere, steam) {
+  render(camera, atmosphere, steam, notify = true) {
     const pose = shotAt(this.age, this.farPose()), post = smooth(14, 18, this.age);
     camera.near = 8e-3;
     applyShot(camera, pose);
@@ -187,7 +209,7 @@ class MacroEntrance {
     atmosphere.invalidateScene();
     if (this.mobile && post === 0) atmosphere.renderWithoutAtmosphere(this.scene, camera);
     else atmosphere.render(this.scene, camera, 0, steam, post);
-    this.notify(pose);
+    if (notify) this.notify(pose);
   }
   release() {
     if (this.disposed) return;

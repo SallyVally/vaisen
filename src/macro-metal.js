@@ -109,7 +109,9 @@ function createDetailTower(tower, materials, maps, renderer, detail, { mobile = 
   }
   const targetColor = materials.body.color.clone(), average = targetColor.clone().multiply(mean);
   const lightBoost = THREE.MathUtils.clamp((0.18 + 0.205 + 0.24) / (average.r + average.g + average.b), 1, 5);
-  return { materials: new Set([face, edge]), lightBoost, dispose() {
+  return { materials: new Set([face, edge]), lightBoost, prepare() {
+    for (const texture of new Set(Object.values(textures))) renderer.initTexture(texture);
+  }, dispose() {
     for (const texture of new Set(Object.values(textures))) texture.dispose();
   }, update(weight) {
     const blend = 1 - weight;
