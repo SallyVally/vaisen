@@ -487,7 +487,7 @@ async function start() {
       const finished = macroEntrance.tick(dt);
       macroEntrance.render(camera, atmosphere, steam);
       if (finished) {
-        if (!mobilePresentation) handover = new SceneHandover(renderer);
+        handover = new SceneHandover(renderer, mobilePresentation ? 1.45 : 1.15);
         macroEntrance.release();
         restoreMacro();
       }
