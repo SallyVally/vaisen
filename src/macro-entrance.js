@@ -4,7 +4,7 @@ import { configureA2Lighting } from "./stage-a2.js";
 import { createWetSurface, createCoreEmitter } from "./tower-lookdev.js";
 import { createDetailTower } from "./macro-metal.js";
 import { fadeWorld } from "./macro-world.js";
-import { DURATION, smooth, shotAt, applyShot } from "./macro-shot.js";
+import { DURATION, smooth, shotAt, applyShot, sweepLightAt } from "./macro-shot.js";
 import { optimizePortraitLightWork } from "./tower-light-work.js";
 import { batchPortraitModules } from "./tower-rigid-batches.js";
 import { MobileSurfaceWork } from "./tower-mobile-surface.js";
@@ -93,7 +93,7 @@ class MacroEntrance {
       this.macroRig.add(light);
       return light;
     };
-    this.strip = area(15199992, 27, 0.11, 5.5, [2.7, 10.2, 2.4], [0.9, 10.1, 5.05], [1, 3.4]);
+    this.strip = area(15199992, 44, 0.14, 5.5, [2.7, 10.2, 2.4], [0.9, 10.1, 5.05], [1, 3.4]);
     if (!mobile) area(13359598, 1.8, 2.8, 5.8, [4.8, 12.4, 6.1], [0.9, 10, 4.9], [1.6, 3.8]);
     area(16766880, 12, 0.055, 3.5, [1.1, 10.2, 6.7], [0.9, 10, 4.9], [0.55, 2.2]);
     if (mobile) {
@@ -196,13 +196,13 @@ class MacroEntrance {
     this.scene.environmentIntensity = 0.38 * boost * smooth(1.3, 3.6, this.age);
     this.scene.background.copy(this.mainScene.background).multiplyScalar(post);
     this.scene.fog.density = 0.012 * (1 - post);
+    const sweep = sweepLightAt(this.age);
     for (const light of this.macroRig.children) {
       const { intensity, opening } = light.userData;
-      light.intensity = intensity * pose.light * boost * smooth(...opening, this.age);
+      light.intensity = intensity * boost * (light === this.strip ? sweep.weight : pose.light * smooth(...opening, this.age));
     }
-    this.strip.position.z = THREE.MathUtils.lerp(2.2, 3.7, smooth(0, 8, this.age));
-    this.strip.position.y = 10.15 - 0.65 * smooth(0, 8, this.age);
-    this.strip.lookAt(0.9, 10.1, 5.03);
+    this.strip.position.set(sweep.x, sweep.y, sweep.z);
+    this.strip.lookAt(0.9, sweep.targetY, sweep.targetZ);
     for (const { light, intensity } of this.lights) light.intensity = intensity * pose.key;
     if (pose.world > 0) this.water.userData.invalidate();
     atmosphere.setLayered(false);

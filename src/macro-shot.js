@@ -7,6 +7,18 @@ const smooth = (a, b, x) => {
 const up = new Vector3(0, 1, 0);
 const rotation = new Quaternion();
 const matrix = new Matrix4();
+function sweepLightAt(seconds) {
+  const travel = smooth(2.2, 14.8, seconds);
+  const y = MathUtils.lerp(10.15, 8.4, travel);
+  return {
+    x: MathUtils.lerp(2.7, 3.35, travel),
+    y,
+    z: MathUtils.lerp(2.2, 3.1, travel),
+    targetY: y - 0.05,
+    targetZ: 0.3144 * y + 1.8464,
+    weight: smooth(1, 3.4, seconds) * (1 - smooth(13, 16.8, seconds))
+  };
+}
 function shotAt(seconds, farPose) {
   const t = MathUtils.clamp(seconds, 0, DURATION);
   const travel = smooth(0, 8, t);
@@ -46,5 +58,6 @@ export {
   DURATION,
   applyShot,
   shotAt,
-  smooth
+  smooth,
+  sweepLightAt
 };
