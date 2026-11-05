@@ -376,7 +376,7 @@ async function start() {
   if (stageA2 && new URLSearchParams(location.search).get("intro") === "cinematic") {
     try {
       const { MacroEntrance } = await import("./macro-entrance.js");
-      macroEntrance = new MacroEntrance({ renderer, mainScene: scene, tower, landscape, materials, maps, farPose: () => overview, mobile: mobilePresentation, publish: (state) => window.parent.postMessage({ type: "vaisen-scene-intro-state", ...state }, location.origin) });
+      macroEntrance = new MacroEntrance({ renderer, mainScene: scene, tower, landscape, materials, maps, farPose: () => overview, atmosphereStrength: inspectionAtmosphere, mobile: mobilePresentation, publish: (state) => window.parent.postMessage({ type: "vaisen-scene-intro-state", ...state }, location.origin) });
     } catch (error) {
       console.warn("VAISEN introduction unavailable", error);
     }

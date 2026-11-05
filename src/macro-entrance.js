@@ -56,9 +56,9 @@ function cloneStage(source, cache) {
   return visit(source);
 }
 class MacroEntrance {
-  constructor({ renderer, mainScene, tower, landscape, materials, maps, farPose, mobile = false, publish = () => {
+  constructor({ renderer, mainScene, tower, landscape, materials, maps, farPose, atmosphereStrength = () => 1, mobile = false, publish = () => {
   } }) {
-    Object.assign(this, { renderer, mainScene, farPose, mobile, publish });
+    Object.assign(this, { renderer, mainScene, farPose, atmosphereStrength, mobile, publish });
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0);
     this.scene.fog = new THREE.FogExp2(0, 0.012);
@@ -209,7 +209,7 @@ class MacroEntrance {
     atmosphere.setMacroWeight(post);
     atmosphere.invalidateScene();
     if (this.mobile && post === 0) atmosphere.renderWithoutAtmosphere(this.scene, camera);
-    else atmosphere.render(this.scene, camera, 0, steam, post);
+    else atmosphere.render(this.scene, camera, 0, steam, post * this.atmosphereStrength());
     if (notify) this.notify(pose);
   }
   release() {
