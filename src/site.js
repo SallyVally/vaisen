@@ -19,9 +19,27 @@ const intro = document.querySelector(".hero-intro"), story = document.querySelec
 const audio = document.querySelector("#portfolio-audio"), wave = document.querySelector("#track-waveform");
 const soundButton = document.querySelector("#preview-sound");
 const systemMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-const fullMotion = new URLSearchParams(window.location?.search ?? "").get("motion") === "full";
+const pageUrl = new URL(location.href);
+const replayOpening = pageUrl.searchParams.get("intro") === "replay";
+const fullMotion = replayOpening || pageUrl.searchParams.get("motion") === "full";
 const reduced = fullMotion ? { matches: false } : systemMotion;
-const openingEligible = !reduced?.matches && (!location.hash || location.hash === "#top");
+const openingKey = "vaisen-opening-seen";
+let openingSeen = false;
+try { openingSeen = window.localStorage.getItem(openingKey) === "1"; } catch {}
+const rememberOpening = () => { try { window.localStorage.setItem(openingKey, "1"); } catch {} };
+const openingEligible = replayOpening || !openingSeen && !reduced?.matches && (!location.hash || location.hash === "#top");
+if (replayOpening) {
+  pageUrl.searchParams.delete("intro");
+  history.replaceState(history.state, "", pageUrl.pathname + pageUrl.search + pageUrl.hash);
+}
+const replayButton = document.querySelector("#replay-opening");
+replayButton.hidden = false;
+replayButton.addEventListener("click", () => {
+  const url = new URL(location.href);
+  url.searchParams.set("intro", "replay");
+  url.hash = "";
+  location.assign(url.href);
+});
 const sceneUrl = new URL(frame.dataset.sceneSrc, location.href);
 sceneUrl.searchParams.set("intro", openingEligible ? "cinematic" : "none");
 if (fullMotion) sceneUrl.searchParams.set("motion", "full");
@@ -87,7 +105,7 @@ for (const node of [hero, copy, intro, document.querySelector("#story-content"),
 function animateIntro(animate = true) {
   introCopy.forEach(({ node, text }, index) => typeMotion.set(node, text, { animate, headline: index < 2, delay: index * 110 }));
 }
-const opening = new SiteOpening({ root: document.querySelector("#brand-intro"), hero, copy, reduced, send, onReveal: animateIntro, eligible: openingEligible });
+const opening = new SiteOpening({ root: document.querySelector("#brand-intro"), hero, copy, reduced, send, onReveal: animateIntro, onSeen: rememberOpening, eligible: openingEligible });
 const fail = () => {
   opening.cancel(true);
   fallback.hidden = false;

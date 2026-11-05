@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#080b0c" />
     <meta name="description" content="VAISEN is an independent studio for websites, CGI, original music and light. Make them look twice." />
     <title>VAISEN / Design, Image &amp; Sound</title>
-    <script>document.documentElement.classList.add('film-boot');setTimeout(()=>document.documentElement.classList.remove('film-boot'),12000)</script>
+    <script>let introBoot=true;try{const p=new URLSearchParams(location.search),seen=localStorage.getItem('vaisen-opening-seen')==='1',reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches&&p.get('motion')!=='full',direct=location.hash&&location.hash!=='#top';introBoot=p.get('intro')==='replay'||!seen&&!reduced&&!direct}catch{}if(introBoot){document.documentElement.classList.add('film-boot');setTimeout(()=>document.documentElement.classList.remove('film-boot'),12000)}</script>
     <link rel="icon" href="%BASE_URL%brand/vaisen-logo.svg" type="image/svg+xml" />
     <link rel="preload" href="%BASE_URL%brand/vaisen-logo.svg" as="image" type="image/svg+xml" />
     <link rel="preload" href="%BASE_URL%fonts/manrope-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
@@ -34,7 +34,7 @@
           <p class="eyebrow">Independent design studio</p>
           <h1 id="hero-title">VAISEN</h1><h2 id="hero-statement">Make them look twice.</h2>
           <p id="hero-description" class="hero-description">Websites, CGI, original music and architectural lighting. An independent studio by Egor Vaiserman.</p>
-          <div class="hero-actions"><a class="text-action primary-action" id="hero-work-link" href="#work">Selected work <i data-lucide="arrow-down" aria-hidden="true"></i></a></div>
+          <div class="hero-actions"><a class="text-action primary-action" id="hero-work-link" href="#work">Selected work <i data-lucide="arrow-down" aria-hidden="true"></i></a><button class="intro-replay" id="replay-opening" type="button" hidden>Watch intro <span aria-hidden="true">↗</span></button></div>
           </div>
           <section class="discipline-story" id="discipline-story" aria-label="Studio discipline" aria-roledescription="carousel" tabindex="0" hidden>
             <div class="story-kicker"><span id="story-discipline"></span><button class="icon-button story-return" type="button" data-assembly="core" aria-label="Return to the full tower" title="Back to overview"><i data-lucide="corner-up-left" aria-hidden="true"></i></button></div>
@@ -48,7 +48,7 @@
           </section>
         </div>
         <div class="hero-exhibit" aria-label="VAISEN architectural world">
-          <div class="scene-stage"><img class="scene-poster" src="%BASE_URL%work/vaisen-a2-poster.webp" width="1600" height="900" alt="" fetchpriority="high" /><iframe id="studio-scene" title="VAISEN interactive architectural world" data-scene-src="%BASE_URL%tower.html?v=1.1.2&amp;embedded=1&amp;composition=immersive&amp;art=a2" loading="eager" tabindex="-1"></iframe><div class="scene-fallback" id="scene-fallback" hidden><p>The live scene couldn't load.</p><a href="%BASE_URL%tower.html">Try the standalone scene <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></div>
+          <div class="scene-stage"><img class="scene-poster" src="%BASE_URL%work/vaisen-a2-poster.webp" width="1600" height="900" alt="" fetchpriority="high" /><iframe id="studio-scene" title="VAISEN interactive architectural world" data-scene-src="%BASE_URL%tower.html?v=1.1.3&amp;embedded=1&amp;composition=immersive&amp;art=a2" loading="eager" tabindex="-1"></iframe><div class="scene-fallback" id="scene-fallback" hidden><p>The live scene couldn't load.</p><a href="%BASE_URL%tower.html">Try the standalone scene <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></div>
           <div class="hero-bottom">
           <output class="sr-only" id="scene-state" aria-live="polite">Preparing the scene</output>
           <nav class="sector-nav" aria-label="Explore studio disciplines">

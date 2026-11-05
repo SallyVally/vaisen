@@ -6,6 +6,18 @@
   z-index: 1000;
   pointer-events: none;
 }
+.intro-replay {
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  color: #a3a4a5;
+  font: 400 11px/1 Manrope, sans-serif;
+  cursor: pointer;
+}
+.intro-replay:hover { color: #fff; }
+.intro-replay:focus-visible { outline: 1px solid #d9b477; outline-offset: 4px; }
+.intro-replay span { margin-left: 9px; }
 .site-opening {
   position: fixed;
   inset: 0;

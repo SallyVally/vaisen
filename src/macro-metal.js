@@ -8,11 +8,11 @@ function hash(x, y = 0) {
 function brushedMaps(renderer, mobile = false) {
   const size = mobile ? 1024 : 2048, heights = new Float32Array(size * size), normals = new Uint8Array(size * size * 4), roughness = mobile ? null : new Uint8Array(size * size * 4);
   for (let y = 0; y < size; y++) {
-    const block = y / 256, blend = block % 1, by = Math.floor(block), e = blend * blend * (3 - 2 * blend);
+    const block = y / 128, blend = block % 1, by = Math.floor(block), e = blend * blend * (3 - 2 * blend), period = size / 128;
     for (let x = 0; x < size; x++) {
-      const line = hash(x) * 0.72 + (hash(x, by) * (1 - e) + hash(x, by + 1) * e) * 0.28;
+      const line = hash(x) * 0.45 + (hash(x, by) * (1 - e) + hash(x, (by + 1) % period) * e) * 0.55;
       const fine = hash(x, y) * 0.11;
-      const cut = hash(Math.floor(x / 3), 12) > 0.989 ? -0.28 * (0.6 + 0.4 * Math.sin(y * 4e-3 + x)) : 0;
+      const cut = hash(Math.floor(x / 3), 12) > 0.989 ? -0.28 * (0.6 + 0.4 * Math.sin(y * Math.PI * 8 / size + x)) : 0;
       heights[y * size + x] = line + fine + cut;
     }
   }
@@ -29,7 +29,7 @@ function brushedMaps(renderer, mobile = false) {
   const make = (bytes) => {
     const texture = new THREE.DataTexture(bytes, size, size, THREE.RGBAFormat);
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(8, 8);
+    texture.repeat.set(8, 16);
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.generateMipmaps = true;

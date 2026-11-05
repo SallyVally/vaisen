@@ -1,26 +1,27 @@
 class SiteOpening {
-  constructor({ root, hero, copy, reduced, send, onReveal, eligible = true }) {
-    Object.assign(this, { root, hero, copy, reduced, send, onReveal });
+  constructor({ root, hero, copy, reduced, send, onReveal, onSeen = () => {}, eligible = true }) {
+    Object.assign(this, { root, hero, copy, reduced, send, onReveal, onSeen });
     this.done = false;
     this.ready = false;
     this.shown = false;
+    this.recorded = false;
     this.eligible = eligible;
     this.document = root.ownerDocument;
     this.skipButton = root.querySelector(".opening-skip");
     this.controls = hero.querySelector(".hero-bottom");
-    this.onSkip = () => this.cancel();
+    this.onSkip = () => this.dismiss();
     this.onKey = (event) => {
       if (event.key === "Escape" && !this.done) {
         event.preventDefault();
-        this.cancel();
+        this.dismiss();
       }
     };
     this.onScroll = () => {
-      if (window.scrollY > 4) this.cancel(true);
+      if (window.scrollY > 4) this.dismiss(true);
     };
-    this.onWheel = () => this.cancel(true);
+    this.onWheel = () => this.dismiss(true);
     this.onNavigation = (event) => {
-      if (event.target.closest?.('a[href^="#"]')) this.cancel(true);
+      if (event.target.closest?.('a[href^="#"]')) this.dismiss(true);
     };
     this.onPreference = () => {
       if (reduced.matches) this.cancel(true);
@@ -52,6 +53,7 @@ class SiteOpening {
     }
     clearTimeout(this.timer);
     this.document.documentElement.classList.remove("film-loading");
+    this.remember();
     this.send({ type: "vaisen-scene-intro", action: "start" });
   }
   update(state) {
@@ -69,6 +71,15 @@ class SiteOpening {
     this.copy.inert = false;
     this.controls.inert = false;
     this.onReveal(Boolean(animate && !this.reduced?.matches));
+  }
+  dismiss(immediate = false) {
+    if (!this.done && this.eligible) this.remember();
+    this.cancel(immediate);
+  }
+  remember() {
+    if (this.recorded) return;
+    this.recorded = true;
+    this.onSeen();
   }
   cancel(immediate = false) {
     if (this.done) return;
