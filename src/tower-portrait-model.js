@@ -13,8 +13,21 @@ function previewRoomMetadata(room, template) {
 async function loadPortraitModule(sector, previewRooms, materials, texture, { loader = new GLTFLoader(), interiorLook = false } = {}) {
   const module = new THREE.Group();
   module.name = `CLOSED_${sector.id}`;
-  for (const url of [sector.frontUrl, sector.structureUrl].filter(Boolean)) {
-    const root = (await loader.loadAsync(url)).scene;
+  const urls = [sector.frontUrl, sector.structureUrl].filter(Boolean);
+  const roomSpecs = sector.rooms.map((room, level) => {
+    const original = sector.stage === "baked-study";
+    const source = original ? room : previewRooms[level];
+    return { original, source, data: original ? room : previewRoomMetadata(room, source) };
+  });
+  const [roots, roomMaps] = await Promise.all([
+    Promise.all(urls.map((url) => loader.loadAsync(url))),
+    Promise.all(roomSpecs.map(({ original, source }) => Promise.all([
+      texture(source.atlasUrl),
+      original && source.propsAtlasUrl ? texture(source.propsAtlasUrl) : null
+    ])))
+  ]);
+  for (const [index, url] of urls.entries()) {
+    const root = roots[index].scene;
     root.updateMatrixWorld(true);
     const baked = sector.stage === "baked-study" && url === sector.frontUrl;
     const converted = new Map();
@@ -45,12 +58,8 @@ async function loadPortraitModule(sector, previewRooms, materials, texture, { lo
   }
   const cover = displayPbrMaterial(new THREE.MeshStandardMaterial({ color: 724496, roughness: 0.6, side: THREE.DoubleSide }));
   module.add(createRoomRearCovers(sector, cover));
-  for (const [level, room] of sector.rooms.entries()) {
-    const original = sector.stage === "baked-study";
-    const source = original ? room : previewRooms[level];
-    const data = original ? room : previewRoomMetadata(room, source);
-    const atlas = await texture(source.atlasUrl);
-    const props = original && source.propsAtlasUrl ? await texture(source.propsAtlasUrl) : null;
+  for (const [level, { original, data }] of roomSpecs.entries()) {
+    const [atlas, props] = roomMaps[level];
     const projection = sector.projection === "music" ? createMusicRoom : createBakedRoom;
     const portal = projection(data, atlas, props, { physicalFirst: true, movable: true });
     if (original) installInteriorMotion(portal, data);
@@ -77,7 +86,17 @@ async function loadPortraitTower(metadata, assets, materials, texture, progress 
 }, { interiorLook = false } = {}) {
   const loader = new GLTFLoader(), group = new THREE.Group();
   group.name = "VAISEN_CLOSED_PORTRAIT";
-  const shell = (await loader.loadAsync(metadata.shellUrl)).scene;
+  const template = metadata.sectors.find((sector) => sector.id === "cgi");
+  let loaded = 0;
+  const [shellAsset, letterAsset, modules] = await Promise.all([
+    loader.loadAsync(metadata.shellUrl),
+    loader.loadAsync(assets.letterUrl),
+    Promise.all(metadata.sectors.map((sector) => loadPortraitModule(sector, metadata.previewRooms ?? template.rooms, materials, texture, { loader, interiorLook }).then((module) => {
+      progress(++loaded, metadata.sectors.length);
+      return module;
+    })))
+  ]);
+  const shell = shellAsset.scene;
   const replaced = [];
   shell.traverse((object) => {
     if (["V_LEFT", "V_RIGHT"].includes(object.userData.source_object)) replaced.push(object);
@@ -88,16 +107,12 @@ async function loadPortraitTower(metadata, assets, materials, texture, progress 
   }
   prepareDisplayPbr(shell);
   group.add(shell);
-  const letter = (await loader.loadAsync(assets.letterUrl)).scene;
+  const letter = letterAsset.scene;
   letter.traverse((object) => {
     if (object.isMesh) object.material = materials.body;
   });
   group.add(letter);
-  const template = metadata.sectors.find((sector) => sector.id === "cgi");
-  for (const [index, sector] of metadata.sectors.entries()) {
-    group.add(await loadPortraitModule(sector, metadata.previewRooms ?? template.rooms, materials, texture, { loader, interiorLook }));
-    progress(index + 1, metadata.sectors.length);
-  }
+  group.add(...modules);
   group.traverse((object) => {
     if (object.isMesh) {
       const transparent = (Array.isArray(object.material) ? object.material : [object.material]).some((mat) => mat.transparent);

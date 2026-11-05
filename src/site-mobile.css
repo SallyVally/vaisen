@@ -32,6 +32,10 @@
     height: 100svh;
     min-height: 640px;
   }
+  .immersive-site .scene-poster {
+    object-fit: cover;
+    object-position: center;
+  }
   .immersive-site .hero-copy,
   .immersive-site .hero:not([data-sector=core]) .hero-copy,
   .immersive-site .hero[data-sector=cgi] .hero-copy {

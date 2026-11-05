@@ -152,6 +152,24 @@
 .immersive-site .hero[data-scene-ready=true] .scene-poster {
   opacity: 0;
 }
+.immersive-site .scene-loading {
+  position: absolute;
+  z-index: 2;
+  right: 4%;
+  bottom: 110px;
+  color: #c3c6c7;
+  font-size: 10px;
+  letter-spacing: .02em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+}
+.immersive-site .hero[data-scene-loading=true]:not([data-scene-ready]) .scene-loading {
+  opacity: .8;
+}
+.film-active .immersive-site .scene-loading {
+  opacity: 0 !important;
+}
 .immersive-site .scene-fallback {
   inset: auto 4% 130px auto;
   max-width: 240px;

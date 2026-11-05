@@ -112,6 +112,7 @@ const fail = () => {
   hero.dataset.sceneReady = "false";
   sceneState.textContent = "Scene unavailable";
 };
+setTimeout(() => { if (!hero.dataset.sceneReady) hero.dataset.sceneLoading = "true"; }, 1200);
 const timeout = setTimeout(fail, 6e4);
 function selectSector(sector) {
   if (!SITE_SECTORS.includes(sector)) return;

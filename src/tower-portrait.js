@@ -72,6 +72,19 @@ reduced.addEventListener("change", () => {
 retry.addEventListener("click", () => location.reload());
 const json = readAssetJson;
 async function start() {
+  const manifestRequests = Promise.all([
+    json(assetUrl("/tower-showcase/tower-collections-v04.json")),
+    json(assetUrl("/cgi-studio/l02-studio-v01.json")),
+    json(assetUrl("/cgi-complete/cgi-complete-v01.json")),
+    json(assetUrl("/music-studio/music-studio-v01.json")),
+    json(assetUrl("/tower-lookdev/portrait-assets-v01.json"))
+  ]);
+  manifestRequests.catch(() => {});
+  const introRequested = stageA2 && new URLSearchParams(location.search).get("intro") === "cinematic";
+  const introModule = introRequested ? import("./macro-entrance.js").catch((error) => {
+    console.warn("VAISEN introduction unavailable", error);
+    return null;
+  }) : null;
   const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
   const phoneViewport = () => mobileViewport(canvas.clientWidth, canvas.clientHeight, coarsePointer);
   const mobilePresentation = embedded && phoneViewport();
@@ -116,8 +129,8 @@ async function start() {
   if (detail) configureCrispShadow(scene.getObjectByName("PORTRAIT_SCULPTING_KEY"));
   const hardwareShadow = renderer.shadowMap.enabled ? createHardwareShadow(scene.getObjectByName("PORTRAIT_SCULPTING_KEY"), { filter: detail ? "compact" : "soft" }) : null;
   const depthOnly = detail && hardwareShadow ? installDepthOnlyShadowPass(renderer, scene.getObjectByName("PORTRAIT_SCULPTING_KEY"), hardwareShadow) : null;
-  const metadata = applyMusicStudy(applyTowerStudio(await json(assetUrl("/tower-showcase/tower-collections-v04.json")), await json(assetUrl("/cgi-studio/l02-studio-v01.json")), await json(assetUrl("/cgi-complete/cgi-complete-v01.json"))), await json(assetUrl("/music-studio/music-studio-v01.json")), { quality: "presentation" });
-  const assets = await json(assetUrl("/tower-lookdev/portrait-assets-v01.json"));
+  const [collections, studio, complete, musicStudy, assets] = await manifestRequests;
+  const metadata = applyMusicStudy(applyTowerStudio(collections, studio, complete), musicStudy, { quality: "presentation" });
   const textures = new Map(), textureLoader = new THREE.TextureLoader();
   function texture(url, color = true, repeat = false) {
     const key = `${url}|${color}|${repeat}`;
@@ -133,13 +146,15 @@ async function start() {
     }));
     return textures.get(key);
   }
-  const maps = {};
-  for (const name of ["color", "roughness", "normal", "stoneNormal"]) maps[name] = await texture(assets.maps[name].url, name === "color", true);
+  const maps = Object.fromEntries(await Promise.all(["color", "roughness", "normal", "stoneNormal"].map(async (name) => [name, await texture(assets.maps[name].url, name === "color", true)])));
   const materials = createPortraitMaterials(maps);
   if (stageA2) applyA2Materials(materials, { mobile: phoneViewport() });
-  const tower = await loadPortraitTower(metadata, assets, materials, texture, (loaded, total) => {
-    status.value = `${loaded} / ${total}`;
-  }, { interiorLook: stageA2 });
+  const [tower, landscape] = await Promise.all([
+    loadPortraitTower(metadata, assets, materials, texture, (loaded, total) => {
+      status.value = `${loaded} / ${total}`;
+    }, { interiorLook: stageA2 }),
+    stageA2 ? createA2Landscape(materials) : createPortraitLandscape(materials)
+  ]);
   const cgiArt = stageA2 ? prepareCgiInspection(tower) : null;
   const glassArts = stageA2 ? { music: prepareInspectionGlass(tower.getObjectByName("CLOSED_music"), "music") } : {};
   const inspectionAtmosphere = () => cgiInspectionAtmosphere(Math.max(cgiArt?.progress ?? 0, ...Object.values(glassArts).map((art) => art.progress)));
@@ -166,7 +181,6 @@ async function start() {
   rig.apply(assemblyPose);
   actuators.apply(assemblyPose);
   scene.add(createCoreEmitter());
-  const landscape = stageA2 ? await createA2Landscape(materials) : createPortraitLandscape(materials);
   scene.add(landscape);
   const water = createWetSurface(maps.stoneNormal, phoneViewport() ? 512 : 768, { crop: true, captureWork: reflectionWork, depthFirst: waterFirst });
   water.visible = reflectionToggle.checked;
@@ -373,10 +387,10 @@ async function start() {
   reduced.addEventListener("change", settleReducedMotion);
   motionToggle.addEventListener("change", settleReducedMotion);
   window.addEventListener("hashchange", () => selectAssembly(sectorFromHash(location.hash)));
-  if (stageA2 && new URLSearchParams(location.search).get("intro") === "cinematic") {
+  if (introModule) {
     try {
-      const { MacroEntrance } = await import("./macro-entrance.js");
-      macroEntrance = new MacroEntrance({ renderer, mainScene: scene, tower, landscape, materials, maps, farPose: () => overview, atmosphereStrength: inspectionAtmosphere, mobile: mobilePresentation, publish: (state) => window.parent.postMessage({ type: "vaisen-scene-intro-state", ...state }, location.origin) });
+      const module = await introModule;
+      if (module) macroEntrance = new module.MacroEntrance({ renderer, mainScene: scene, tower, landscape, materials, maps, farPose: () => overview, atmosphereStrength: inspectionAtmosphere, mobile: mobilePresentation, publish: (state) => window.parent.postMessage({ type: "vaisen-scene-intro-state", ...state }, location.origin) });
     } catch (error) {
       console.warn("VAISEN introduction unavailable", error);
     }
