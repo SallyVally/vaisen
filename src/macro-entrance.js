@@ -194,6 +194,7 @@ class MacroEntrance {
     for (const object of this.worldMeshes) object.visible = pose.world > 0;
     const boost = THREE.MathUtils.lerp(1, this.hero.lightBoost, pose.light);
     this.scene.environmentIntensity = 0.38 * boost * smooth(1.3, 3.6, this.age);
+    this.scene.background.copy(this.mainScene.background).multiplyScalar(post);
     this.scene.fog.density = 0.012 * (1 - post);
     for (const light of this.macroRig.children) {
       const { intensity, opening } = light.userData;

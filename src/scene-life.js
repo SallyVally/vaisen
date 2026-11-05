@@ -21,7 +21,7 @@ class SceneLife {
     const geometry = new BufferGeometry();
     geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
     geometry.setAttribute("aSeed", new Float32BufferAttribute(seeds, 1));
-    const material = new ShaderMaterial({ transparent: true, depthWrite: false, toneMapped: false, uniforms: { lifeTime: { value: 0 }, pixelRatio: { value: 1 } }, vertexShader: `attribute float aSeed;uniform float lifeTime;uniform float pixelRatio;varying float vAlpha;
+    const material = new ShaderMaterial({ transparent: true, depthWrite: false, toneMapped: false, uniforms: { lifeTime: { value: 0 }, pixelRatio: { value: 1 }, visibility: { value: 1 } }, vertexShader: `attribute float aSeed;uniform float lifeTime;uniform float pixelRatio;uniform float visibility;varying float vAlpha;
         void main(){
           vec3 p=position;
           p.x+=sin(lifeTime*.17+aSeed*6.28)*1.8;
@@ -29,7 +29,7 @@ class SceneLife {
           p.y+=sin(lifeTime*.14+aSeed*8.0)*.65;
           vec4 view=modelViewMatrix*vec4(p,1.0);
           float glint=.35+.65*pow(.5+.5*sin(lifeTime*.37+aSeed*19.0),2.0);
-          vAlpha=glint*.28;
+          vAlpha=glint*.28*visibility;
           gl_PointSize=clamp((2.2+aSeed*2.8)*pixelRatio*28.0/max(1.0,-view.z),1.0,4.5*pixelRatio);
           gl_Position=projectionMatrix*view;
         }`, fragmentShader: `varying float vAlpha;
@@ -42,7 +42,7 @@ class SceneLife {
     this.group.add(this.particles);
     this.position = new Vector3();
   }
-  tick(dt, { enabled = true, mobile = false, pixelRatio = 1 } = {}) {
+  tick(dt, { enabled = true, mobile = false, pixelRatio = 1, strength = 1 } = {}) {
     if (!Number.isFinite(dt) || dt < 0) throw new Error("Invalid scene-life step");
     if (!enabled) {
       this.pending = 0;
@@ -57,8 +57,11 @@ class SceneLife {
     this.particles.material.uniforms.lifeTime.value = this.time;
     this.particles.material.uniforms.pixelRatio.value = pixelRatio;
     this.water.material.uniforms.motionTime.value = this.time;
-    this.water.material.uniforms.motionStrength.value = mobile ? 0.6 : 1;
+    this.water.material.uniforms.motionStrength.value = (mobile ? 0.6 : 1) * strength;
     return true;
+  }
+  setVisibility(value) {
+    this.particles.material.uniforms.visibility.value = Math.max(0, Math.min(1, value));
   }
   lightPosition(base, weight = 1) {
     return this.position.set(base[0] + 0.65 * Math.sin(this.time * 0.16) * weight, base[1] + 0.38 * Math.sin(this.time * 0.11) * weight, base[2] + 0.48 * Math.sin(this.time * 0.13) * weight);

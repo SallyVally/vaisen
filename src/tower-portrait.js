@@ -36,6 +36,7 @@ import { InteriorMotion } from "./interior-motion.js";
 import { portraitPixelRatio } from "./tower-capture-aa.js";
 import { FirstSectorReveal, firstRevealCamera, firstRevealLight } from "./first-sector-reveal.js";
 import { SceneLife } from "./scene-life.js";
+import { SceneHandover } from "./scene-handover.js";
 import { frameMobileTower } from "./stage-mobile-framing.js";
 import { MobileSurfaceWork } from "./tower-mobile-surface.js";
 import { MobileReflectionProxy } from "./tower-mobile-reflection.js";
@@ -175,6 +176,7 @@ async function start() {
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 180);
   const cameraMotion = new SiteCameraMotion();
   let macroEntrance = null;
+  let handover = null, lifeFade = -1;
   const firstReveal = new FirstSectorReveal();
   let revealLightApplied = false;
   const introLight = stageA2 ? scene.getObjectByName("PORTRAIT_CORE_AREA") : null;
@@ -234,6 +236,10 @@ async function start() {
     for (const [sector, art] of Object.entries(glassArts)) art.update(navigation.active === sector && !navigation.route ? assemblyPose.cameraMix : 0);
   }
   function resize() {
+    if (handover) {
+      handover.dispose();
+      handover = null;
+    }
     const width = Math.max(1, canvas.clientWidth), height = Math.max(1, canvas.clientHeight);
     const cinematic = stageA2 && !mobileViewport(width, height, coarsePointer) && width / height > 1.15;
     atmosphere.setCinematic(cinematic);
@@ -319,6 +325,10 @@ async function start() {
     if (reduced.matches) lightBlend.request(lightMode, { immediate: true });
   });
   async function selectAssembly(sector) {
+    if (handover) {
+      handover.dispose();
+      handover = null;
+    }
     firstReveal.select(sector, { enabled: stageA2 && motionToggle.checked && !phoneViewport() && camera.aspect > 1.15, fromCore: navigation.requested === "core" && !navigation.route && mechanism.time === 0 });
     const token = ++selectionToken;
     loadingSector = null;
@@ -376,6 +386,10 @@ async function start() {
     atmosphere.setMacroWeight(1);
     cameraMotion.set(overview, true);
     updateCamera();
+    if (sceneLife) {
+      sceneLife.setVisibility(0);
+      lifeFade = 0;
+    }
     invalidateScene(true);
   }
   function stopMacro(immediate = false) {
@@ -473,6 +487,7 @@ async function start() {
       const finished = macroEntrance.tick(dt);
       macroEntrance.render(camera, atmosphere, steam);
       if (finished) {
+        if (!mobilePresentation) handover = new SceneHandover(renderer);
         macroEntrance.release();
         restoreMacro();
       }
@@ -518,7 +533,15 @@ async function start() {
       atmosphere.setMoodTint(sectorLight.tint);
       invalidateScene();
     }
-    const sceneLifeChanged = sceneLife?.tick(dt, { enabled: motionToggle.checked, mobile: mobileCapture, pixelRatio: renderer.getPixelRatio() });
+    let fadeChanged = false;
+    if (sceneLife && lifeFade >= 0 && lifeFade < 3) {
+      lifeFade = Math.min(3, lifeFade + dt);
+      const t = lifeFade / 3;
+      sceneLife.setVisibility(t * t * (3 - 2 * t));
+      fadeChanged = true;
+    }
+    const lifeStrength = lifeFade < 0 ? 1 : Math.min(1, lifeFade / 3) ** 2 * (3 - 2 * Math.min(1, lifeFade / 3));
+    const sceneLifeChanged = sceneLife?.tick(dt, { enabled: motionToggle.checked, mobile: mobileCapture, pixelRatio: renderer.getPixelRatio(), strength: lifeStrength }) || fadeChanged;
     if (sceneLifeChanged) {
       if (liveLayers) atmosphere.invalidateDynamic();
       else atmosphere.invalidateScene();
@@ -569,10 +592,11 @@ async function start() {
     atmosphere.setLayered(liveLayers && mobileCapture && !navigation.busy && !floorFocus.busy && !cameraChanged && lightBlend.value === lightBlend.target);
     if (atmosphereToggle.checked) atmosphere.render(scene, camera, time, steam, stageA2 ? inspectionAtmosphere() : 1, assemblyPose.releaseMist, releaseFX, captureScale, fogScale);
     else if (captureAA === "hybrid" || captureAA === "fxaa") atmosphere.renderWithoutAtmosphere(scene, camera, captureScale);
-    else if (directDirty) {
+    else if (directDirty || handover) {
       renderer.render(scene, camera);
       directDirty = false;
     }
+    if (handover && !handover.render(dt)) handover = null;
     if (shaderFailure) {
       renderer.setAnimationLoop(null);
       status.dataset.ready = "false";
