@@ -44,7 +44,7 @@ class TypeMotion {
     };
     this.effects.set(node, cleanup);
   }
-  set(node, value, { animate = true, headline = false, delay = 0, exit = true } = {}) {
+  set(node, value, { animate = true, headline = false, liquid = false, delay = 0, exit = true } = {}) {
     const previous = node.querySelector(".type-visual");
     const outgoing = animate && exit && previous && previous.textContent !== value ? previous.cloneNode(true) : null;
     if (outgoing) {
@@ -84,6 +84,7 @@ class TypeMotion {
     if (!animate) return;
     const animations = [];
     const reduced = this.reduced?.matches;
+    const liquidHeadline = headline && liquid && !reduced;
     if (outgoing && outgoing.animate) {
       outgoing.classList.add("type-outgoing");
       node.append(outgoing);
@@ -98,14 +99,16 @@ class TypeMotion {
     }
     const handoff = outgoing || this.departures.size ? reduced ? 50 : 120 : 0;
     visual.classList.add("type-arriving");
-    visual.classList.toggle("type-headline", headline && !reduced);
+    visual.classList.toggle("type-headline", headline && !reduced && !liquidHeadline);
+    visual.classList.toggle("type-liquid", liquidHeadline);
     if (headline && !reduced && visual.animate) this.refract(node, visual, 900, delay + handoff);
     for (const [index, word] of words.entries()) {
       if (!word.animate) continue;
       const wordDelay = (reduced ? Math.min(delay, 50) : delay) + handoff + Math.min(index * (headline ? 42 : 8), headline ? 250 : 100);
       word.style.setProperty("--ink-delay", `${wordDelay}ms`);
       const frames = reduced ? [{ opacity: 0, clipPath: "polygon(0 0,0 0,0 100%,0 100%)" }, { opacity: 1, clipPath: "polygon(0 0,100% 0,100% 100%,0 100%)" }] : headline ? [{ opacity: 0, clipPath: "polygon(0 0,0 0,-30% 100%,0 100%)", transform: "translate3d(12px,0,0) skewX(-9deg) scaleX(1.08)" }, { opacity: 1, offset: 0.45 }, { opacity: 1, clipPath: "polygon(0 0,130% 0,100% 100%,0 100%)", transform: "translate3d(0,0,0) skewX(0deg) scaleX(1)" }] : [{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "translateY(0px)" }];
-      const animation = word.animate(frames, { duration: reduced ? 280 : headline ? 1e3 : 440, delay: wordDelay, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" });
+      const duration = reduced ? 280 : liquidHeadline ? 1520 : headline ? 1000 : 440;
+      const animation = word.animate(frames, { duration, delay: wordDelay, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" });
       animations.push(animation);
       animation.finished?.then(() => {
         if (this.active.get(node) === animations && animations.every((item) => item.playState === "finished")) {

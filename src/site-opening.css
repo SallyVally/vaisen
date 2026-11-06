@@ -88,10 +88,14 @@
   opacity: var(--film-ui,0);
   transition: opacity .09s linear;
 }
-.film-active .hero-copy,
-.film-active .hero-bottom {
-  opacity: var(--film-reveal,0);
-  transition: opacity .09s linear;
+.immersive-site .hero-copy,
+.immersive-site .hero-bottom {
+  transition: opacity .85s cubic-bezier(.22, .64, .3, 1);
+}
+.film-active:not(.film-revealing) .hero-copy,
+.film-active:not(.film-revealing) .hero-bottom {
+  opacity: 0;
+  transition: none;
 }
 .film-active .scene-poster {
   opacity: 0 !important;
@@ -109,10 +113,12 @@
 }
 html[data-ui-motion=full].film-active .opening-curtain,
 html[data-ui-motion=full].film-active .opening-skip,
-html[data-ui-motion=full].film-active .site-header,
-html[data-ui-motion=full].film-active .hero-copy,
-html[data-ui-motion=full].film-active .hero-bottom {
+html[data-ui-motion=full].film-active .site-header {
   transition: opacity .09s linear !important;
+}
+html[data-ui-motion=full]:not(.film-active:not(.film-revealing)) .immersive-site .hero-copy,
+html[data-ui-motion=full]:not(.film-active:not(.film-revealing)) .immersive-site .hero-bottom {
+  transition: opacity .85s cubic-bezier(.22, .64, .3, 1) !important;
 }
 @keyframes opening-load {
   0%, 100% {

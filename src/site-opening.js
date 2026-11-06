@@ -70,6 +70,7 @@ class SiteOpening {
     this.shown = true;
     this.copy.inert = false;
     this.controls.inert = false;
+    this.document.documentElement.classList.add("film-revealing");
     this.onReveal(Boolean(animate && !this.reduced?.matches));
   }
   dismiss(immediate = false) {
@@ -93,7 +94,7 @@ class SiteOpening {
     clearTimeout(this.timer);
     this.revealText(animate);
     this.root.hidden = true;
-    this.document.documentElement.classList.remove("film-active", "film-loading", "film-boot");
+    this.document.documentElement.classList.remove("film-active", "film-loading", "film-boot", "film-revealing");
     for (const name of ["--film-opening", "--film-reveal", "--film-ui", "--film-bottom"]) this.document.documentElement.style.removeProperty(name);
     window.removeEventListener("resize", this.onResize);
     this.skipButton.removeEventListener("click", this.onSkip);

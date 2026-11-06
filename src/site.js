@@ -103,7 +103,7 @@ function reportLayout() {
 const layoutObserver = new ResizeObserver(reportLayout);
 for (const node of [hero, copy, intro, document.querySelector("#story-content"), document.querySelector(".hero-bottom")]) layoutObserver.observe(node);
 function animateIntro(animate = true) {
-  introCopy.forEach(({ node, text }, index) => typeMotion.set(node, text, { animate, headline: index < 2, delay: index * 110 }));
+  introCopy.forEach(({ node, text }, index) => typeMotion.set(node, text, { animate, headline: index < 2, liquid: node.id === "hero-statement", delay: index * 110 }));
 }
 const opening = new SiteOpening({ root: document.querySelector("#brand-intro"), hero, copy, reduced, send, onReveal: animateIntro, onSeen: rememberOpening, eligible: openingEligible });
 const fail = () => {
