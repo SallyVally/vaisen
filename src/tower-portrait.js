@@ -598,7 +598,7 @@ async function start() {
       currentStory = story;
       title.textContent = story === "cgi" ? "CGI" : story === "music" ? "MUSIC" : story === "smart-light" ? "SMART LIGHT" : story === "web" ? "WEB" : "VAISEN";
       description.innerHTML = story === "cgi" ? 'Art direction, product imagery<br class="desktop-break" /> and cinematic motion.' : story === "music" ? "Original music." : story === "smart-light" ? 'Architectural lighting<br class="desktop-break" /> and adaptive spaces.' : story === "web" ? 'Digital identities, websites<br class="desktop-break" /> and interactive products.' : coreDescription;
-      disciplines.textContent = story === "cgi" ? "Render infrastructure / Production studio / CGI stage" : story === "music" ? "Impact recording / Composition / Picture mixing" : story === "smart-light" ? "Quiet living / Meeting / Daylight atelier" : story === "web" ? "Identity gallery / Product studio / Responsive lab" : "Digital / CGI / Music / Spatial";
+      disciplines.textContent = story === "cgi" ? "Render infrastructure / Production studio / CGI stage" : story === "music" ? "Impact recording / Composition / Listening room" : story === "smart-light" ? "Quiet living / Meeting / Daylight atelier" : story === "web" ? "Identity gallery / Product studio / Responsive lab" : "Digital / CGI / Music / Spatial";
       titleBlock.classList.toggle("is-inspecting", story !== "core");
     }
     assemblyCaption.textContent = mechanism.time > 0 ? navigation.active === "music" ? "MUSIC / SCORING" : navigation.active === "smart-light" ? "LIGHT / SPATIAL" : navigation.active === "web" ? "WEB / DIGITAL" : "CGI / PRODUCTION" : navigation.route ? "TOWER / TRANSIT" : "VAISEN CORE";
