@@ -21,7 +21,9 @@ function createCassetteShell(sector, material) {
 }
 function createSectorGlass(sector, material) {
   const geometry = new BufferGeometry();
-  geometry.setAttribute("position", new Float32BufferAttribute(sector.glassCorners.flat(), 3));
+  const clearance = 0.012;
+  const points = sector.glassCorners.flatMap(([x, y, z]) => [x + sector.outward[0] * clearance, y, z]);
+  geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
   geometry.setIndex([0, 1, 2, 0, 2, 3]);
   geometry.computeVertexNormals();
   const mesh = new Mesh(geometry, material);

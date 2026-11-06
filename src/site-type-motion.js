@@ -98,6 +98,7 @@ class TypeMotion {
     }
     const handoff = outgoing || this.departures.size ? reduced ? 50 : 120 : 0;
     visual.classList.add("type-arriving");
+    visual.classList.toggle("type-headline", headline && !reduced);
     if (headline && !reduced && visual.animate) this.refract(node, visual, 900, delay + handoff);
     for (const [index, word] of words.entries()) {
       if (!word.animate) continue;

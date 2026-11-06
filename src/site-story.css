@@ -461,7 +461,7 @@
 .type-word {
   position: relative;
 }
-.type-arriving .type-word::after {
+.type-arriving.type-headline .type-word::after {
   content: attr(data-ink);
   position: absolute;
   inset: 0;
@@ -477,7 +477,7 @@
   background-size: 300% 100%;
   background-clip: text;
   -webkit-background-clip: text;
-  animation: type-exposure 1.15s var(--ink-delay, 0ms) cubic-bezier(.22, 1, .36, 1) both;
+  animation: type-exposure .85s var(--ink-delay, 0ms) cubic-bezier(.22, 1, .36, 1) both;
 }
 @keyframes type-exposure {
   0% {
@@ -493,7 +493,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-ui-motion=full]) .type-arriving .type-word::after {
+  html:not([data-ui-motion=full]) .type-arriving.type-headline .type-word::after {
     animation: none;
     display: none;
   }
